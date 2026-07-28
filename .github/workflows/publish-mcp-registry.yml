@@ -1,0 +1,34 @@
+name: Publish MCP Registry metadata
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download and validate the official publisher
+        env:
+          PUBLISHER_VERSION: 1.8.0
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            --remote-name "https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz"
+          curl --fail --silent --show-error --location \
+            --remote-name "https://github.com/modelcontextprotocol/registry/releases/download/v${PUBLISHER_VERSION}/registry_${PUBLISHER_VERSION}_checksums.txt"
+          sha256sum --ignore-missing --check "registry_${PUBLISHER_VERSION}_checksums.txt"
+          tar -xzf mcp-publisher_linux_amd64.tar.gz
+          ./mcp-publisher validate mcp/server.json
+      - name: Publish metadata
+        env:
+          MCP_REGISTRY_PRIVATE_KEY_HEX: ${{ secrets.MCP_REGISTRY_PRIVATE_KEY_HEX }}
+        run: |
+          set -euo pipefail
+          ./mcp-publisher login http \
+            --domain slidesfly.com \
+            --private-key "$MCP_REGISTRY_PRIVATE_KEY_HEX"
+          ./mcp-publisher publish mcp/server.json
