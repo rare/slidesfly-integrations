@@ -1,0 +1,85 @@
+{
+  "serverInfo": {
+    "name": "Slidesfly",
+    "version": "0.1.0"
+  },
+  "authentication": {
+    "required": true,
+    "schemes": ["bearer"]
+  },
+  "tools": [
+    {
+      "name": "publish",
+      "description": "Publish HTML or zip bytes to a shareable Slidesfly reader URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "content_base64": { "type": "string" },
+          "filename": { "type": "string" },
+          "title": { "type": "string" },
+          "visibility": {
+            "type": "string",
+            "enum": ["public", "unlisted", "private"]
+          },
+          "deck_id": { "type": "string" }
+        },
+        "required": ["content_base64", "filename"]
+      }
+    },
+    {
+      "name": "list",
+      "description": "List decks owned by the authenticated account.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "versions",
+      "description": "List the version history for an owned deck.",
+      "inputSchema": {
+        "type": "object",
+        "properties": { "deck_id": { "type": "string" } },
+        "required": ["deck_id"]
+      }
+    },
+    {
+      "name": "restore",
+      "description": "Restore an owned deck version and create a new live version.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "deck_id": { "type": "string" },
+          "version": { "type": "integer", "minimum": 1 }
+        },
+        "required": ["deck_id", "version"]
+      }
+    },
+    {
+      "name": "claim",
+      "description": "Claim one or more anonymous decks into the authenticated account.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "deck_id": { "type": "string" },
+                "claim_token": { "type": "string" }
+              },
+              "required": ["deck_id", "claim_token"]
+            }
+          }
+        },
+        "required": ["items"]
+      }
+    },
+    {
+      "name": "status",
+      "description": "Confirm that the supplied Bearer API key is accepted.",
+      "inputSchema": { "type": "object", "properties": {} }
+    }
+  ],
+  "resources": [],
+  "prompts": []
+}

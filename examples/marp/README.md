@@ -1,7 +1,9 @@
 # Marp → Slidesfly example
 
 This example pins `@marp-team/marp-cli` 4.5.0 and exports one self-contained HTML presentation.
-It is a local compatibility fixture, not a live public demo.
+
+- Live reader: <https://slidesfly.xyz/d/0IL3JvWNsXBEpXA342r9ug>
+- Last tested: 2026-07-29
 
 ## Build
 

@@ -19,6 +19,11 @@ jobs:
           node-version: '22'
       - name: Test publish action
         run: actions/publish/test.sh
+      - name: Validate Skill and MCP metadata
+        run: |
+          node -e "const fs=require('node:fs'); const skill=fs.readFileSync('skills/slidesfly/SKILL.md','utf8'); if(!skill.includes('name: slidesfly') || !skill.includes('version: 0.1.1')) process.exit(1)"
+          node -e "JSON.parse(require('node:fs').readFileSync('mcp/server.json','utf8'))"
+          node -e "JSON.parse(require('node:fs').readFileSync('mcp/server-card.json','utf8'))"
       - name: Build Reveal.js example
         working-directory: examples/revealjs
         run: npm ci && npm run build

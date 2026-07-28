@@ -2,6 +2,9 @@
 
 Validated dependency target: Reveal.js 6.0.1.
 
+- Live reader: <https://slidesfly.xyz/d/nlTgWEixO2Ik0wYT9KsLDg>
+- Last tested: 2026-07-29
+
 ```bash
 npm install
 npm run build

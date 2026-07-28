@@ -1,0 +1,23 @@
+name: Publish action smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: deck
+        uses: ./actions/publish
+        with:
+          file: examples/plain-html/deck.html
+          api-key: ${{ secrets.SLIDESFLY_API_KEY }}
+          deck-id: hPTjZDoztFZRUFkbDzGbgz
+      - name: Verify stable reader URL
+        env:
+          ACTUAL_URL: ${{ steps.deck.outputs.url }}
+        run: test "$ACTUAL_URL" = "https://slidesfly.xyz/d/hPTjZDoztFZRUFkbDzGbgz"
