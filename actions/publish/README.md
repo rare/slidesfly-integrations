@@ -48,8 +48,11 @@ stability, replace the release tag with the reviewed commit SHA.
 
 ## Current limitations
 
-The action's fixture verifies secret isolation, CLI version checks, argument construction, output
-mapping, and cleanup. A real Slidesfly test-deck run is still required before this integration is
-promoted from experimental. The current version check detects a mismatched hosted CLI version but
-does not prove byte-level artifact integrity. PR comments are outside this action's scope; it writes
-a job summary and exposes outputs for a separately permissioned comment step.
+The action's fixture verifies secret isolation, CLI version checks, create/update argument
+construction, output mapping, and cleanup. A
+[production smoke run](https://github.com/rare/slidesfly-integrations/actions/runs/30381572513)
+updated the public test deck and verified its stable reader URL on 2026-07-29.
+
+The current version check detects a mismatched hosted CLI version but does not prove byte-level
+artifact integrity. PR comments are outside this action's scope; it writes a job summary and exposes
+outputs for a separately permissioned comment step.
