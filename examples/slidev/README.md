@@ -2,6 +2,9 @@
 
 Validated dependency targets: `@slidev/cli` 52.18.0 and `@slidev/theme-default` 0.25.0.
 
+- Live reader: <https://slidesfly.xyz/d/EPt8Npfya1DZNBm3cfFPHW>
+- Last tested: 2026-07-29
+
 ```bash
 npm install
 npm run build

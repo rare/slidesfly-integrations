@@ -12,12 +12,14 @@ developers can inspect, test, and reuse.
 | Path | Status | Purpose |
 |---|---|---|
 | [`actions/publish`](actions/publish) | Experimental | Publish or update an HTML deck from GitHub Actions |
-| [`examples/plain-html`](examples/plain-html) | Verified fixture | One self-contained HTML deck |
-| [`examples/codex-generated`](examples/codex-generated) | Verified fixture | Agent-generated single-file deck |
-| [`examples/revealjs`](examples/revealjs) | Verified fixture | Reveal.js 6.0.1 multi-file build |
-| [`examples/slidev`](examples/slidev) | Verified fixture | Slidev 52.18.0 static build |
-| [`examples/marp`](examples/marp) | Build-verified fixture | Marp CLI 4.5.0 single-file export |
+| [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
+| [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
+| [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
+| [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
+| [`examples/slidev`](examples/slidev) | Live-verified fixture | Slidev 52.18.0 static build |
+| [`examples/marp`](examples/marp) | Live-verified fixture | Marp CLI 4.5.0 single-file export |
 | [`mcp/server.json`](mcp/server.json) | Schema-valid candidate | Official MCP Registry metadata for the hosted server |
+| [`mcp/server-card.json`](mcp/server-card.json) | Discovery metadata | Static card for authenticated MCP scanners |
 
 ## Start here
 
@@ -28,13 +30,19 @@ developers can inspect, test, and reuse.
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
 
+Install the public Skill source with:
+
+```bash
+npx skills add rare/slidesfly-integrations --skill slidesfly
+```
+
 ## Current boundaries
 
 - The website installer is the supported public CLI distribution.
 - The hosted MCP endpoint is `https://slidesfly.com/api/mcp` and requires a Slidesfly API key.
 - Public npm packages are not assumed by this repository.
 - Multi-file zip publishing requires an eligible authenticated plan.
-- Example fixtures are not live-reader claims unless their README links a verified live demo.
+- Every example links to a public reader URL verified on 2026-07-29.
 
 ## Releases
 
