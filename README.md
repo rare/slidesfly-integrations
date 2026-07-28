@@ -18,8 +18,8 @@ developers can inspect, test, and reuse.
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
 | [`examples/slidev`](examples/slidev) | Live-verified fixture | Slidev 52.18.0 static build |
 | [`examples/marp`](examples/marp) | Live-verified fixture | Marp CLI 4.5.0 single-file export |
-| [`mcp/server.json`](mcp/server.json) | Schema-valid candidate | Official MCP Registry metadata for the hosted server |
-| [`mcp/server-card.json`](mcp/server-card.json) | Discovery metadata | Static card for authenticated MCP scanners |
+| [`mcp/server.json`](mcp/server.json) | Published v0.1.0 | Active official MCP Registry metadata for the hosted server |
+| [`mcp/server-card.json`](mcp/server-card.json) | Discovery metadata | Static capability card for auth-walled scans |
 
 ## Start here
 
@@ -29,6 +29,7 @@ developers can inspect, test, and reuse.
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
+- [Distribution ledger](docs/distribution-ledger.md)
 
 Install the public Skill source with:
 
