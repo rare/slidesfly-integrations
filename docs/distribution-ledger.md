@@ -34,7 +34,8 @@ All five reader shells returned HTTP 200 on 2026-07-29.
 - Both `slidesfly.com` and `slidesfly.xyz` serve robots and sitemap responses.
 - Both production domains expose Google site-verification metadata.
 - The production client bundle contains PostHog, `landing_view`, and
-  `anonymous_publish_started`; a project-side event receipt has not yet been independently queried.
+  `anonymous_publish_started`. After analytics consent, a browser delivery test received two HTTP
+  200 responses from the PostHog event collector; a dashboard-side event query has not been run.
 - No current IndexNow production receipt is recorded.
 
 These readiness checks are not counted as backlinks or search-console submissions.
