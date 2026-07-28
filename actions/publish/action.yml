@@ -1,0 +1,60 @@
+name: Publish HTML deck to Slidesfly
+description: Publish or update an HTML presentation and expose its reader URL to later workflow steps.
+author: Slidesfly
+
+inputs:
+  file:
+    description: Path to a .html, .htm, or root-level .zip deck artifact.
+    required: true
+  api-key:
+    description: Slidesfly API key. Pass this from GitHub Actions secrets.
+    required: true
+  title:
+    description: Optional deck title.
+    required: false
+    default: ''
+  deck-id:
+    description: Optional owned deck ID to update without changing its reader URL.
+    required: false
+    default: ''
+  visibility:
+    description: 'Visibility for a new owned deck: public, unlisted, or private.'
+    required: false
+    default: unlisted
+
+outputs:
+  url:
+    description: Reader URL returned by Slidesfly.
+    value: ${{ steps.publish.outputs.url }}
+  deck-id:
+    description: Deck ID returned by Slidesfly.
+    value: ${{ steps.publish.outputs.deck-id }}
+  result:
+    description: Complete non-secret CLI JSON result.
+    value: ${{ steps.publish.outputs.result }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Node.js 22
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Publish deck
+      id: publish
+      shell: bash
+      env:
+        INPUT_FILE: ${{ inputs.file }}
+        INPUT_API_KEY: ${{ inputs.api-key }}
+        INPUT_TITLE: ${{ inputs.title }}
+        INPUT_DECK_ID: ${{ inputs.deck-id }}
+        INPUT_VISIBILITY: ${{ inputs.visibility }}
+        SLIDESFLY_API_URL: https://slidesfly.com
+        SLIDESFLY_CLI_URL: https://slidesfly.com/cli.mjs
+        SLIDESFLY_CLI_VERSION: 0.1.1
+      run: '"$GITHUB_ACTION_PATH/publish.sh"'
+
+branding:
+  icon: upload-cloud
+  color: purple

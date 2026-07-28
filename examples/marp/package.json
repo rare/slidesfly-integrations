@@ -1,0 +1,11 @@
+{
+  "name": "slidesfly-marp-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "marp slides.md --output build/index.html"
+  },
+  "devDependencies": {
+    "@marp-team/marp-cli": "4.5.0"
+  }
+}

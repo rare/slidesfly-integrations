@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plain HTML deck · Slidesfly example</title>
+    <link rel="icon" href="data:," />
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        background: #0e0d0b;
+        color: #ede8dd;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      main {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
+      section {
+        position: absolute;
+        inset: 0;
+        display: none;
+        align-content: center;
+        padding: 10vw;
+        background:
+          radial-gradient(circle at 82% 18%, rgba(95, 201, 166, 0.2), transparent 28rem),
+          #0e0d0b;
+      }
+      section[data-active="true"] {
+        display: grid;
+      }
+      .kicker {
+        margin: 0 0 1rem;
+        font: 600 0.8rem ui-monospace, monospace;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #5fc9a6;
+      }
+      h1,
+      h2 {
+        max-width: 14ch;
+        margin: 0;
+        font-size: clamp(2.5rem, 8vw, 7rem);
+        letter-spacing: -0.06em;
+        line-height: 0.95;
+      }
+      p {
+        max-width: 44rem;
+        margin: 1.5rem 0 0;
+        font-size: clamp(1rem, 2.3vw, 1.55rem);
+        line-height: 1.55;
+        color: #a29a8a;
+      }
+      output {
+        position: fixed;
+        right: 1.25rem;
+        bottom: 1rem;
+        font: 0.75rem ui-monospace, monospace;
+        color: #6f6759;
+      }
+    </style>
+  </head>
+  <body>
+    <main aria-live="polite">
+      <section data-active="true">
+        <p class="kicker">Slidesfly example · 01</p>
+        <h1>One HTML file. One shareable deck.</h1>
+        <p>This example contains its CSS, JavaScript, and content in one publishable artifact.</p>
+      </section>
+      <section>
+        <p class="kicker">Slidesfly example · 02</p>
+        <h2>No build server required.</h2>
+        <p>Open it locally, publish it anonymously, then verify the returned reader URL.</p>
+      </section>
+      <section>
+        <p class="kicker">Slidesfly example · 03</p>
+        <h2>Update later. Keep the URL.</h2>
+        <p>Claim the deck, publish a new version with its ID, and retain the same reader link.</p>
+      </section>
+    </main>
+    <output id="progress">1 / 3</output>
+    <script>
+      const slides = Array.from(document.querySelectorAll('section'));
+      const progress = document.querySelector('#progress');
+      let index = 0;
+      function show(next) {
+        index = Math.max(0, Math.min(slides.length - 1, next));
+        slides.forEach((slide, position) => {
+          slide.dataset.active = String(position === index);
+        });
+        progress.textContent = `${index + 1} / ${slides.length}`;
+      }
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight' || event.key === ' ') show(index + 1);
+        if (event.key === 'ArrowLeft') show(index - 1);
+        if (event.key === 'Home') show(0);
+        if (event.key === 'End') show(slides.length - 1);
+      });
+      window.addEventListener('message', (event) => {
+        if (event.data?.source !== 'slidesfly') return;
+        const actions = {
+          next: () => show(index + 1),
+          prev: () => show(index - 1),
+          first: () => show(0),
+          last: () => show(slides.length - 1),
+        };
+        actions[event.data.action]?.();
+      });
+    </script>
+  </body>
+</html>

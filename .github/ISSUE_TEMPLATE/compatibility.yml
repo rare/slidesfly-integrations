@@ -1,0 +1,26 @@
+name: Framework compatibility request
+description: Propose a reproducible HTML presentation framework workflow.
+title: '[compatibility] '
+labels:
+  - compatibility
+body:
+  - type: input
+    id: framework
+    attributes:
+      label: Framework and version
+    validations:
+      required: true
+  - type: textarea
+    id: artifact
+    attributes:
+      label: Build command and artifact shape
+      description: State whether the result is one HTML file or index.html plus local assets.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence completed
+      description: Separate build, browser, archive, and live-reader checks.
+    validations:
+      required: true

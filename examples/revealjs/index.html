@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Reveal.js · Slidesfly example</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./dist/reveal.css" />
+    <link rel="stylesheet" href="./dist/theme/black.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p>Slidesfly × Reveal.js</p>
+          <h1>Framework output, one reader URL</h1>
+        </section>
+        <section>
+          <h2>Keep the runtime local</h2>
+          <p>The published archive includes Reveal.js CSS and JavaScript.</p>
+        </section>
+        <section>
+          <h2>Test the sandbox</h2>
+          <p>Check keyboard, touch, fullscreen, plugins, fonts, and media before sharing.</p>
+        </section>
+      </div>
+    </div>
+    <script type="module">
+      import Reveal from './dist/reveal.mjs';
+      const deck = new Reveal();
+      await deck.initialize({ hash: true, progress: true });
+      window.addEventListener('message', (event) => {
+        if (event.data?.source !== 'slidesfly') return;
+        const actions = {
+          next: () => deck.next(),
+          prev: () => deck.prev(),
+          first: () => deck.slide(0),
+          last: () => deck.slide(deck.getTotalSlides() - 1),
+        };
+        actions[event.data.action]?.();
+      });
+    </script>
+  </body>
+</html>

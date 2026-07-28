@@ -1,0 +1,24 @@
+name: Publish deck
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: deck
+        uses: rare/slidesfly-integrations/actions/publish@v0.1.0
+        with:
+          file: path/to/deck.html
+          api-key: ${{ secrets.SLIDESFLY_API_KEY }}
+          title: Workflow deck
+          visibility: unlisted
+      - name: Show reader URL
+        env:
+          SLIDESFLY_READER_URL: ${{ steps.deck.outputs.url }}
+        run: echo "$SLIDESFLY_READER_URL"

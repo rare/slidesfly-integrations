@@ -1,0 +1,12 @@
+{
+  "name": "slidesfly-slidev-example",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "slidev build slides.md --base ./ --out dist"
+  },
+  "dependencies": {
+    "@slidev/cli": "52.18.0",
+    "@slidev/theme-default": "0.25.0"
+  }
+}

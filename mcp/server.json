@@ -1,0 +1,22 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.slidesfly/slidesfly",
+  "title": "Slidesfly",
+  "description": "Publish and manage existing HTML presentations from an MCP-capable Agent.",
+  "version": "0.1.0",
+  "websiteUrl": "https://slidesfly.com/docs/mcp",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://slidesfly.com/api/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer API key created in Slidesfly account settings.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

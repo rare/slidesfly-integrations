@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Slidesfly documentation
+    url: https://slidesfly.com/docs
+    about: Check product and publishing documentation before filing an integration issue.
+  - name: Product security architecture
+    url: https://slidesfly.com/security
+    about: Review the security model; do not disclose vulnerabilities in a public issue.

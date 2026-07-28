@@ -1,0 +1,40 @@
+name: Integration bug
+description: Report a reproducible problem in an action, adapter, or example.
+title: '[bug] '
+labels:
+  - bug
+body:
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Surface
+      options:
+        - GitHub Action
+        - Plain HTML example
+        - Reveal.js example
+        - Slidev example
+        - Marp example
+        - MCP metadata
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include commands, versions, and non-secret output.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: I removed API keys, claim tokens, private deck content, and personal data.
+          required: true

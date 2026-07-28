@@ -1,0 +1,30 @@
+name: Validate integrations
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test publish action
+        run: actions/publish/test.sh
+      - name: Build Reveal.js example
+        working-directory: examples/revealjs
+        run: npm ci && npm run build
+      - name: Build Slidev example
+        working-directory: examples/slidev
+        run: npm ci && npm run build
+      - name: Build Marp example
+        working-directory: examples/marp
+        run: npm ci && npm run build
