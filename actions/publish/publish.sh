@@ -55,15 +55,19 @@ fi
 result="$("${publish_args[@]}")"
 export SLIDESFLY_ACTION_RESULT="$result"
 
-url="$(node -e '
-  const result = JSON.parse(process.env.SLIDESFLY_ACTION_RESULT);
-  if (!result.ok || typeof result.data?.url !== "string") process.exit(1);
-  process.stdout.write(result.data.url);
-')"
 deck_id="$(node -e '
   const result = JSON.parse(process.env.SLIDESFLY_ACTION_RESULT);
   if (!result.ok || typeof result.data?.deck_id !== "string") process.exit(1);
   process.stdout.write(result.data.deck_id);
+')"
+url="$(node -e '
+  const result = JSON.parse(process.env.SLIDESFLY_ACTION_RESULT);
+  if (!result.ok || typeof result.data?.deck_id !== "string") process.exit(1);
+  const url =
+    typeof result.data.url === "string"
+      ? result.data.url
+      : `https://slidesfly.xyz/d/${result.data.deck_id}`;
+  process.stdout.write(url);
 ')"
 
 {
