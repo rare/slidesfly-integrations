@@ -11,11 +11,11 @@ after its public URL is reachable and contains a Slidesfly link or active regist
 |---|---|---|---|
 | Official MCP Registry | `live` | [`com.slidesfly/slidesfly`](https://registry.modelcontextprotocol.io/v0.1/servers?search=com.slidesfly/slidesfly) | Active remote-server record; links to the MCP docs and hosted endpoint |
 | Marp community | `live` | [Show and tell #622](https://github.com/orgs/marp-team/discussions/622) | Public post links the live demo, source fixture, and Marp guide |
-| Awesome Presentation Tools | `under_review` | [PR #9](https://github.com/runablehq/Awesome-presentation-tools/pull/9) | One factual entry in the web-based sharing section |
-| Awesome MCP Servers | `under_review` | [PR #11095](https://github.com/punkpeye/awesome-mcp-servers/pull/11095) | Submission check passed; Glama listing and badge still requested |
-| skills.sh | `verified_not_indexed` | `npx skills add rare/slidesfly-integrations --skill slidesfly` | Isolated install returned Skill v0.1.1; directory search has not indexed it yet |
+| Awesome Presentation Tools | `under_review` | [PR #9](https://github.com/runablehq/Awesome-presentation-tools/pull/9) | Main entry plus all six localized READMEs and seven translation catalogs are present at commit `a783675` |
+| Awesome MCP Servers | `under_review` | [PR #11095](https://github.com/punkpeye/awesome-mcp-servers/pull/11095) | Submission check passed; maintainer still requires an eligible Glama server score badge |
+| skills.sh | `live` | [Slidesfly Skill](https://www.skills.sh/rare/slidesfly-integrations/slidesfly) | Public page returns HTTP 200 and links the repository, install command, and Slidesfly website |
 | Smithery | `blocked` | — | Requires a new Smithery account authorization before URL publishing |
-| Glama | `blocked` | — | Requires account access and connector submission before the Awesome MCP badge can be added |
+| Glama | `live_unclaimed` | [Slidesfly Connector](https://glama.ai/mcp/connectors/com.slidesfly/slidesfly) | Public record exists, but reports `Unhealthy`; ownership claim and credentialed test are deferred |
 
 ## Live evidence assets
 
