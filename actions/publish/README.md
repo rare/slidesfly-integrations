@@ -1,6 +1,6 @@
 # Slidesfly Publish Action
 
-Status: experimental public integration.
+Status: public beta; production-smoke verified.
 
 ## What it does
 
@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deck
-        uses: rare/slidesfly-integrations/actions/publish@v0.1.1
+        uses: rare/slidesfly-integrations@v0.2.0
         with:
           file: examples/plain-html/deck.html
           api-key: ${{ secrets.SLIDESFLY_API_KEY }}
@@ -44,7 +44,8 @@ jobs:
 ```
 
 To update an owned deck without changing its reader URL, add `deck-id`. For stronger supply-chain
-stability, replace the release tag with the reviewed commit SHA.
+stability, replace the release tag with the reviewed commit SHA. Existing workflows can keep using
+`rare/slidesfly-integrations/actions/publish@v0.1.1`; the root path is the Marketplace entry point.
 
 ## Current limitations
 

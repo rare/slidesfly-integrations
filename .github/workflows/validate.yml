@@ -19,6 +19,12 @@ jobs:
           node-version: '22'
       - name: Test publish action
         run: actions/publish/test.sh
+      - name: Validate Marketplace entry point
+        run: |
+          test -f action.yml
+          grep -q '^name: Publish HTML presentation to Slidesfly$' action.yml
+          grep -q 'GITHUB_ACTION_PATH/actions/publish/publish.sh' action.yml
+          grep -q 'uses: rare/slidesfly-integrations@v0.2.0' README.md
       - name: Validate Skill and MCP metadata
         run: |
           node -e "const fs=require('node:fs'); const skill=fs.readFileSync('skills/slidesfly/SKILL.md','utf8'); if(!skill.includes('name: slidesfly') || !skill.includes('version: 0.1.1')) process.exit(1)"

@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deck
-        uses: ./actions/publish
+        uses: ./
         with:
           file: examples/plain-html/deck.html
           api-key: ${{ secrets.SLIDESFLY_API_KEY }}
