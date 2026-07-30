@@ -11,7 +11,8 @@ developers can inspect, test, and reuse.
 
 | Path | Status | Purpose |
 |---|---|---|
-| [`actions/publish`](actions/publish) | Experimental | Publish or update an HTML deck from GitHub Actions |
+| [`action.yml`](action.yml) | Public beta; production-smoke verified | Marketplace-ready root Action for publishing or updating an HTML deck |
+| [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
@@ -37,6 +38,21 @@ Install the public Skill source with:
 npx skills add rare/slidesfly-integrations --skill slidesfly
 ```
 
+Publish a deck from GitHub Actions with:
+
+```yaml
+- id: deck
+  uses: rare/slidesfly-integrations@v0.2.0
+  with:
+    file: deck.html
+    api-key: ${{ secrets.SLIDESFLY_API_KEY }}
+    visibility: unlisted
+```
+
+The root Action is the Marketplace entry point. The existing
+`rare/slidesfly-integrations/actions/publish@v0.1.1` path remains available for workflows already
+using it.
+
 ## Current boundaries
 
 - The website installer is the supported public CLI distribution.
@@ -47,11 +63,12 @@ npx skills add rare/slidesfly-integrations --skill slidesfly
 
 ## Releases
 
-Integration releases use semantic version tags. Pin a commit SHA for the strongest supply-chain
-stability, or use a reviewed release tag when a moving major tag is not available.
+Integration releases use semantic version tags. The root Action is released from the same public
+repository as the MCP, Skill, and framework fixtures. Pin a commit SHA for the strongest
+supply-chain stability, or use a reviewed release tag when a moving major tag is not available.
 
 See [MAINTENANCE.md](MAINTENANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and
-[SECURITY.md](SECURITY.md) before relying on an experimental integration in production.
+[SECURITY.md](SECURITY.md) before relying on a public-beta integration in production.
 
 ## License
 

@@ -14,6 +14,7 @@ after its public URL is reachable and contains a Slidesfly link or active regist
 | Awesome Presentation Tools | `under_review` | [PR #9](https://github.com/runablehq/Awesome-presentation-tools/pull/9) | Main entry plus all six localized READMEs and seven translation catalogs are present at commit `a783675` |
 | Awesome MCP Servers | `under_review` | [PR #11095](https://github.com/punkpeye/awesome-mcp-servers/pull/11095) | Submission check passed; maintainer still requires an eligible Glama server score badge |
 | skills.sh | `live` | [Slidesfly Skill](https://www.skills.sh/rare/slidesfly-integrations/slidesfly) | Public page returns HTTP 200 and links the repository, install command, and Slidesfly website |
+| GitHub Marketplace | `prepared` | [`action.yml`](../action.yml) | Root Action metadata and `v0.2.0` usage prepared; mark live only after a public Marketplace receipt exists |
 | Smithery | `blocked` | — | Requires a new Smithery account authorization before URL publishing |
 | Glama | `live_unclaimed` | [Slidesfly Connector](https://glama.ai/mcp/connectors/com.slidesfly/slidesfly) | Public record exists, but reports `Unhealthy`; ownership claim and credentialed test are deferred |
 
