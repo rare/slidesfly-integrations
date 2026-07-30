@@ -14,6 +14,7 @@ developers can inspect, test, and reuse.
 | [`action.yml`](action.yml) | Public beta; production-smoke verified | Marketplace-ready root Action for publishing or updating an HTML deck |
 | [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
+| [`claude/slidesfly`](claude/slidesfly) | Package-ready; directory not submitted | Claude Code plugin with the Skill and hosted MCP |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
@@ -29,6 +30,7 @@ developers can inspect, test, and reuse.
 - [Framework compatibility matrix](https://slidesfly.com/guides/html-presentation-framework-compatibility)
 - [CLI documentation](https://slidesfly.com/docs/cli)
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
+- [Claude Code plugin package](claude/slidesfly)
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
 

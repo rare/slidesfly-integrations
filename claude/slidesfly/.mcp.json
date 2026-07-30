@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "slidesfly": {
+      "type": "http",
+      "url": "https://slidesfly.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer ${user_config.api_key}"
+      }
+    }
+  }
+}
