@@ -15,7 +15,7 @@ printf '<!doctype html><title>Action fixture</title>\n' >"$mock_deck"
 cat >"$mock_cli" <<'EOF'
 #!/usr/bin/env node
 if (process.argv.includes('--version')) {
-  process.stdout.write('0.1.1\n');
+  process.stdout.write('0.1.2\n');
   process.exit(0);
 }
 if (!process.argv.includes('publish')) process.exit(2);
@@ -39,7 +39,7 @@ INPUT_DECK_ID="" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.1" \
+SLIDESFLY_CLI_VERSION="0.1.2" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_output" \
 GITHUB_STEP_SUMMARY="$github_summary" \
@@ -56,7 +56,7 @@ INPUT_DECK_ID="test-deck-id" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.1" \
+SLIDESFLY_CLI_VERSION="0.1.2" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_update_output" \
 GITHUB_STEP_SUMMARY="$github_update_summary" \
