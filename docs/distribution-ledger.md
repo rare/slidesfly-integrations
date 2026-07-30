@@ -16,7 +16,7 @@ after its public URL is reachable and contains a Slidesfly link or active regist
 | skills.sh | `live` | [Slidesfly Skill](https://www.skills.sh/rare/slidesfly-integrations/slidesfly) | Public page returns HTTP 200 and links the repository, install command, and Slidesfly website |
 | GitHub Marketplace | `live` | [Publish HTML presentation to Slidesfly](https://github.com/marketplace/actions/publish-html-presentation-to-slidesfly) | Public `v0.2.0` listing links the repository, Slidesfly website, guides, and docs |
 | Smithery | `blocked` | — | Requires a new Smithery account authorization before URL publishing |
-| Glama | `live_unclaimed` | [Slidesfly Connector](https://glama.ai/mcp/connectors/com.slidesfly/slidesfly) | Public record exists, but reports `Unhealthy`; ownership claim and credentialed test are deferred |
+| Glama | `live` | [Slidesfly Connector](https://glama.ai/mcp/connectors/com.slidesfly/slidesfly) | Public page returns HTTP 200, reports `Healthy`, and shows `Ownership verified`; domain proof is served from `/.well-known/glama.json` |
 
 ## Live evidence assets
 
