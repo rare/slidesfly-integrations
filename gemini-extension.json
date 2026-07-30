@@ -1,0 +1,21 @@
+{
+  "name": "slidesfly",
+  "version": "0.3.0",
+  "description": "Publish and manage existing HTML presentation files with Slidesfly.",
+  "settings": [
+    {
+      "name": "Slidesfly API Key",
+      "description": "API key used by the hosted Slidesfly MCP server.",
+      "envVar": "SLIDESFLY_API_KEY",
+      "sensitive": true
+    }
+  ],
+  "mcpServers": {
+    "slidesfly": {
+      "httpUrl": "https://slidesfly.com/api/mcp",
+      "headers": {
+        "Authorization": "Bearer $SLIDESFLY_API_KEY"
+      }
+    }
+  }
+}

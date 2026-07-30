@@ -24,7 +24,7 @@ jobs:
           test -f action.yml
           grep -q '^name: Publish HTML presentation to Slidesfly$' action.yml
           grep -q 'GITHUB_ACTION_PATH/actions/publish/publish.sh' action.yml
-          grep -q 'uses: rare/slidesfly-integrations@v0.2.0' README.md
+          grep -q 'uses: rare/slidesfly-integrations@v0.3.0' README.md
           node -e "const fs=require('node:fs'); for (const file of ['action.yml','actions/publish/action.yml']) { if (!fs.readFileSync(file,'utf8').includes('SLIDESFLY_CLI_VERSION: 0.1.2')) process.exit(1) }"
       - name: Validate Skill and MCP metadata
         run: |
@@ -33,6 +33,10 @@ jobs:
           node -e "JSON.parse(require('node:fs').readFileSync('mcp/server-card.json','utf8'))"
       - name: Validate Claude Code plugin package
         run: node scripts/validate-claude-package.mjs
+      - name: Validate Gemini CLI extension package
+        run: |
+          node scripts/validate-gemini-extension.mjs
+          npx --yes @google/gemini-cli@0.53.0 extensions validate .
       - name: Build Reveal.js example
         working-directory: examples/revealjs
         run: npm ci && npm run build

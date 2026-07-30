@@ -12,9 +12,10 @@ developers can inspect, test, and reuse.
 | Path | Status | Purpose |
 |---|---|---|
 | [`action.yml`](action.yml) | Public beta; production-smoke verified | Marketplace-ready root Action for publishing or updating an HTML deck |
+| [`gemini-extension.json`](gemini-extension.json) | Installable | Gemini CLI extension with the Skill and hosted MCP |
 | [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
-| [`claude/slidesfly`](claude/slidesfly) | Package-ready; directory not submitted | Claude Code plugin with the Skill and hosted MCP |
+| [`claude/slidesfly`](claude/slidesfly) | Package-ready | Claude Code plugin with the Skill and hosted MCP |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
@@ -30,6 +31,7 @@ developers can inspect, test, and reuse.
 - [Framework compatibility matrix](https://slidesfly.com/guides/html-presentation-framework-compatibility)
 - [CLI documentation](https://slidesfly.com/docs/cli)
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
+- [Gemini CLI extension manifest](gemini-extension.json)
 - [Claude Code plugin package](claude/slidesfly)
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
@@ -40,11 +42,21 @@ Install the public Skill source with:
 npx skills add rare/slidesfly-integrations --skill slidesfly
 ```
 
+Install the Gemini CLI extension from the public repository:
+
+```bash
+gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.0
+```
+
+Gemini CLI requests `SLIDESFLY_API_KEY` as a sensitive setting and stores it in the system
+keychain. Create a key in the Slidesfly dashboard when you are ready to use the hosted MCP; never
+commit the key to this repository.
+
 Publish a deck from GitHub Actions with:
 
 ```yaml
 - id: deck
-  uses: rare/slidesfly-integrations@v0.2.0
+  uses: rare/slidesfly-integrations@v0.3.0
   with:
     file: deck.html
     api-key: ${{ secrets.SLIDESFLY_API_KEY }}
