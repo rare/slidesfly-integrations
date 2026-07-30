@@ -25,6 +25,7 @@ jobs:
           grep -q '^name: Publish HTML presentation to Slidesfly$' action.yml
           grep -q 'GITHUB_ACTION_PATH/actions/publish/publish.sh' action.yml
           grep -q 'uses: rare/slidesfly-integrations@v0.2.0' README.md
+          node -e "const fs=require('node:fs'); for (const file of ['action.yml','actions/publish/action.yml']) { if (!fs.readFileSync(file,'utf8').includes('SLIDESFLY_CLI_VERSION: 0.1.2')) process.exit(1) }"
       - name: Validate Skill and MCP metadata
         run: |
           node -e "const fs=require('node:fs'); const skill=fs.readFileSync('skills/slidesfly/SKILL.md','utf8'); if(!skill.includes('name: slidesfly') || !skill.includes('version: 0.1.1')) process.exit(1)"
