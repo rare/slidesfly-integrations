@@ -31,7 +31,6 @@ developers can inspect, test, and reuse.
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
-- [Distribution ledger](docs/distribution-ledger.md)
 
 Install the public Skill source with:
 
