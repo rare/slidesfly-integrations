@@ -24,6 +24,7 @@ developers can inspect, test, and reuse.
 
 ## Start here
 
+- [GitHub Marketplace Action](https://github.com/marketplace/actions/publish-html-presentation-to-slidesfly)
 - [Publish an HTML presentation](https://slidesfly.com/guides/publish-html-presentation-online)
 - [Framework compatibility matrix](https://slidesfly.com/guides/html-presentation-framework-compatibility)
 - [CLI documentation](https://slidesfly.com/docs/cli)
