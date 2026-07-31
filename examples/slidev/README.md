@@ -4,7 +4,7 @@ Validated dependency targets: `@slidev/cli` 52.18.0 and `@slidev/theme-default` 
 The committed dependency graph requires Node `>=22.18.0 <23`.
 
 - Live reader: <https://slidesfly.xyz/d/EPt8Npfya1DZNBm3cfFPHW>
-- Last tested: 2026-07-29
+- Last tested: 2026-07-31
 
 ```bash
 npm install
