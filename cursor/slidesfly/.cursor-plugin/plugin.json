@@ -1,0 +1,17 @@
+{
+  "name": "slidesfly",
+  "displayName": "Slidesfly",
+  "version": "0.2.0",
+  "description": "Publish and manage existing HTML presentation files with Slidesfly.",
+  "author": {
+    "name": "Slidesfly",
+    "email": "mcp@slidesfly.com"
+  },
+  "homepage": "https://slidesfly.com",
+  "repository": "https://github.com/rare/slidesfly-integrations",
+  "license": "MIT",
+  "keywords": ["html", "presentations", "publishing", "slides"],
+  "category": "productivity",
+  "tags": ["agent-skills", "html-presentations", "publishing"],
+  "skills": "./skills/"
+}

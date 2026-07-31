@@ -16,6 +16,7 @@ developers can inspect, test, and reuse.
 | [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
 | [`claude/slidesfly`](claude/slidesfly) | Package-ready | Claude Code plugin with the Skill and hosted MCP |
+| [`cursor/slidesfly`](cursor/slidesfly) | Preflight-ready; not submitted | Cursor plugin with the Skill and bundled CLI runner |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
@@ -33,6 +34,7 @@ developers can inspect, test, and reuse.
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
 - [Gemini CLI extension manifest](gemini-extension.json)
 - [Claude Code plugin package](claude/slidesfly)
+- [Cursor plugin package](cursor/slidesfly)
 - [Security architecture](https://slidesfly.com/security)
 - [Canonical Slidesfly Skill](https://slidesfly.com/SKILL.md)
 
@@ -51,6 +53,12 @@ gemini extensions install https://github.com/rare/slidesfly-integrations --ref v
 Gemini CLI requests `SLIDESFLY_API_KEY` as a sensitive setting and stores it in the system
 keychain. Create a key in the Slidesfly dashboard when you are ready to use the hosted MCP; never
 commit the key to this repository.
+
+The Cursor package intentionally does not bundle the API-key-only hosted MCP. Cursor Marketplace
+plugins currently have no stable install-time secret-input flow for that configuration, while the
+bundled Slidesfly runner already supports anonymous publishing and the user's existing CLI login.
+See the package README for the exact boundary. The package has not been submitted to or accepted by
+Cursor.
 
 Publish a deck from GitHub Actions with:
 
