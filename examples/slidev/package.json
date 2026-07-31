@@ -9,7 +9,7 @@
     "build": "slidev build slides.md --base ./ --out dist && node ../inject-slidesfly-reader-bridge.mjs dist/index.html slidev"
   },
   "dependencies": {
-    "@slidev/cli": "52.18.0",
+    "@slidev/cli": "52.18.1",
     "@slidev/theme-default": "0.25.0"
   }
 }
