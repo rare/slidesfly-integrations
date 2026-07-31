@@ -19,7 +19,7 @@ developers can inspect, test, and reuse.
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
-| [`examples/slidev`](examples/slidev) | Live-verified fixture | Slidev 52.18.0 static build |
+| [`examples/slidev`](examples/slidev) | Live-verified fixture | Slidev 52.18.1 static build |
 | [`examples/marp`](examples/marp) | Live-verified fixture | Marp CLI 4.5.0 single-file export |
 | [`mcp/server.json`](mcp/server.json) | Published v0.1.0 | Active official MCP Registry metadata for the hosted server |
 | [`mcp/server-card.json`](mcp/server-card.json) | Discovery metadata | Static capability card for auth-walled scans |

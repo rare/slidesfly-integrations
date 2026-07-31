@@ -19,7 +19,8 @@ slidesfly publish examples/plain-html/deck.html --title "Plain HTML example" --j
 Framework directories contain their exact packaging instructions. Multi-file zip publishing
 requires an eligible authenticated plan and `index.html` at the archive root.
 
-All five reader URLs were published as public, owned decks and re-fetched on 2026-07-29.
+All five reader URLs were published as public, owned decks. The framework source/reader pairs were
+rebuilt, byte-matched, and browser-checked on 2026-08-01.
 
 See the
 [framework compatibility matrix](https://slidesfly.com/guides/html-presentation-framework-compatibility)
