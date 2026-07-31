@@ -11,8 +11,9 @@ bundled Skill and hosted MCP tools to publish or manage it.
 - `.claude-plugin/plugin.json` — plugin metadata and sensitive API-key configuration.
 - `.mcp.json` — remote HTTP connection to `https://slidesfly.com/api/mcp`.
 - `skills/slidesfly/SKILL.md` — the canonical Slidesfly publishing workflow.
+- `skills/slidesfly/scripts/slidesfly.mjs` — the complete local CLI-compatible runner.
 
-The manifest, MCP configuration, and Skill are generated from the private Slidesfly release
+The manifest, MCP configuration, Skill, and runner are generated from the Slidesfly release
 contract and must not be edited independently. This README is maintained with the public package.
 
 ## Validate locally
