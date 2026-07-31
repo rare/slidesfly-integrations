@@ -18,3 +18,9 @@ successful build is not automatically labeled as a live Slidesfly reader test.
 - Major releases: breaking action contract or repository layout changes
 
 Release notes must name the evidence run, known limitations, and any required migration.
+
+## Skill runner parity
+
+`skills/slidesfly/scripts/slidesfly.mjs` and channel-specific copies are generated artifacts. Do
+not hand-edit them. A release must record the source Slidesfly CLI version and verify the runner
+SHA-256 against the corresponding canonical bundle before publishing or submitting a directory PR.

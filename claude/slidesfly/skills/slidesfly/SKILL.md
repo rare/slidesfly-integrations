@@ -11,7 +11,7 @@ description: |
   new deck, use a slide-generation skill (e.g. anthropic/slides, codex/slides,
   marp, reveal.js) or write HTML inline FIRST, then invoke this skill to publish
   the resulting file.
-version: 0.1.1
+version: 0.2.0
 license: MIT
 ---
 
@@ -45,29 +45,36 @@ Examples that **should not** trigger:
 ## Prerequisites
 
 1. **HTML file on disk** — single self-contained `.html` is best for v0.
-2. **Node.js 22+** — required for CLI and MCP.
+2. **Node.js 22+** — required for the bundled runner, PATH CLI, and MCP.
 3. **Prefer MCP when available** — if the host has Slidesfly MCP configured (stdio `@slidesfly/mcp` or hosted `https://slidesfly.com/api/mcp`), use tools `publish` / `list` / `versions` / `restore` / `claim` / `status` (and `set_api_key` on stdio only) instead of shelling out to the CLI. Stdio shares `~/.slidesfly/config.json` with the CLI; hosted uses Bearer `sk_…`.
-4. **Get the CLI (official website install)** — install from slidesfly.com, then
-   use PATH `slidesfly` **only if** `slidesfly --version` reports `>= 0.1.1`
-   (older builds still leak `claim_token` on `--json`). Do **not** `curl`/`wget`
-   `https://slidesfly.com/cli.mjs` into `/tmp` (or similar) and execute it
-   ad-hoc.
+4. **Use the bundled runner by default** — resolve the directory containing this `SKILL.md` as
+   `SKILL_DIR`, then require `$SKILL_DIR/scripts/slidesfly.mjs`. It is the complete official CLI
+   built from the same source as the PATH command, not a second API implementation. It performs no
+   remote code download and shares `~/.slidesfly/config.json` with the PATH CLI.
 
 ```bash
-# One-time (or upgrade) install — canonical; same as https://slidesfly.com/#install:
-curl -fsSL https://slidesfly.com/install.sh | sh
-
-# Verify version, then publish:
-slidesfly --version   # expect 0.1.1+
-slidesfly publish ./deck.html --title "My Deck" --json
+test -f "$SKILL_DIR/scripts/slidesfly.mjs"
+node "$SKILL_DIR/scripts/slidesfly.mjs" --version   # expect 0.1.3+
+node "$SKILL_DIR/scripts/slidesfly.mjs" publish ./deck.html --title "My Deck" --json
 ```
 
-5. **Install this skill locally** (optional, for persistent agent guidance):
+For a legacy Cursor `.mdc` installation, the installer stores the runner in the sibling
+`slidesfly/scripts/slidesfly.mjs` directory. Resolve that exact path before executing it. If the
+bundled runner is absent, a reviewed PATH `slidesfly` `>= 0.1.3` is a compatible fallback; do not
+download and execute a replacement during the task.
+
+5. **Install this skill locally** (optional, for persistent agent guidance and the bundled runner):
 
 ```bash
 slidesfly install --target auto
 # or: slidesfly install --target cursor --scope project
+# guidance-only legacy mode, without the bundled runner:
+slidesfly install --target auto --skill-only
 ```
+
+All `slidesfly ...` examples below describe the shared command contract. Agents should invoke them
+as `node "$SKILL_DIR/scripts/slidesfly.mjs" ...` unless a compatible PATH CLI was deliberately
+selected.
 
 ## MCP (preferred when configured)
 
@@ -96,7 +103,7 @@ slidesfly install --target auto
 | `set_api_key` | yes | no | Save `sk_…` locally |
 | `status` | yes | yes | Auth / pending state |
 
-Rules: never paste `claim_token` into chat (stdio MCP never returns it on success). Auth via `set_api_key` / prior `slidesfly login` (stdio) or Bearer key (hosted) — no browser PKCE inside MCP. Prefer MCP `versions` / `restore` for owned deck rollback; CLI remains the fallback for Pro controls (`expire` / `password` / `allowlist`) and skill install.
+Rules: never paste `claim_token` into chat (stdio MCP never returns it on success). Auth via `set_api_key` / prior `slidesfly login` (stdio) or Bearer key (hosted) — no browser PKCE inside MCP. Prefer MCP `versions` / `restore` for owned deck rollback; the bundled runner or compatible PATH CLI remains the fallback for Pro controls (`expire` / `password` / `allowlist`) and skill install.
 
 HTTP reference (no MCP): [OpenAPI](https://slidesfly.com/openapi.yaml). Publish create/update accept optional `Idempotency-Key` (CLI/MCP send a UUID automatically).
 
@@ -121,7 +128,8 @@ Published decks render inside a sandboxed iframe with an **opaque origin** (`all
 
 ## Anonymous-first workflow (default)
 
-**No login is required for the first publish.** The CLI posts to the anonymous API, stores `claim_token` locally, and returns a URL on the content domain:
+**No login is required for the first publish.** The bundled runner posts to the anonymous API,
+stores `claim_token` locally, and returns a URL on the content domain:
 
 ```bash
 slidesfly publish ./deck.html --title "Q4 Plan" --json
@@ -156,7 +164,9 @@ Agent obligations after publish:
 
 ## Authenticated publish (when logged in)
 
-After `slidesfly login`, the CLI stores an API key in `~/.slidesfly/config.json`. Subsequent `publish` calls use the owned-deck API (no local `claim_token`, no `anon_decks` entry):
+After `slidesfly login`, the shared runner/CLI stores an API key in
+`~/.slidesfly/config.json`. Subsequent `publish` calls use the owned-deck API (no local
+`claim_token`, no `anon_decks` entry):
 
 ```bash
 slidesfly login --json
@@ -202,7 +212,8 @@ slidesfly allowlist v0c8Kf3sQ1MnEa7bYj9wHt off --json     # remove allowlist
 | `slidesfly install [--target auto\|claude-code\|cursor\|codex\|all] [--scope user\|project] [--force] [--from-url URL] [--json]` | Install this skill for Claude Code / Cursor / Codex |
 | `slidesfly uninstall [--json]` | Remove installed skill files (does not delete config) |
 
-Global flag: `--api-key <key>` on any command.
+Global flag: `--api-key <key>` on any command. The bundled runner and PATH CLI intentionally expose
+the same command names, arguments, JSON envelope, config path, auth flows, and error codes.
 
 Always pass `--json` when parsing stdout programmatically. Non-TTY stdout auto-emits JSON.
 
@@ -250,7 +261,8 @@ slidesfly list --json
 slidesfly delete v0c8Kf3sQ1MnEa7bYj9wHt --json
 ```
 
-The CLI reads the local `claim_token` and sends it in `X-Slidesfly-Claim-Token`.
+The shared runner/CLI reads the local `claim_token` and sends it in
+`X-Slidesfly-Claim-Token`.
 Never put this credential in a query string or hand-build an anonymous management URL.
 
 ### Upgrade to account (claim)
@@ -324,13 +336,14 @@ Human TTY mode prints minimal text (usually the URL). Agents should always use `
 
 ## Sandbox notes
 
-If `node` or the CLI is unavailable:
+If the bundled runner is unavailable:
 
 1. Check for a preinstalled `slidesfly` binary on PATH (`~/.slidesfly/bin` after website install).
-2. If missing or `slidesfly --version` is older than `0.1.1`, re-run:
-   `curl -fsSL https://slidesfly.com/install.sh | sh`.
-3. Do **not** download `https://slidesfly.com/cli.mjs` to `/tmp` and `node` it directly.
-4. Worst case: `curl -F file=@deck.html` against `https://slidesfly.com/api/decks/anonymous` (requires manual multipart assembly). Prefer CLI/MCP so `claim_token` stays off chat transcripts.
+2. Continue only if `slidesfly --version` is `0.1.3` or newer.
+3. Otherwise stop and direct the user to the official technical quickstart. Do not download or
+   execute a remote installer, ad-hoc `cli.mjs`, or unverified npm package from this Skill.
+4. Do not hand-build a multipart publish request: use the bundled runner, a compatible PATH CLI, or
+   configured MCP so `claim_token` stays off chat transcripts.
 
 If loopback login is blocked, use `slidesfly login --code` (headless device flow) or `slidesfly login --api-key` with a key from the dashboard.
 
@@ -352,9 +365,11 @@ If loopback login is blocked, use `slidesfly login --code` (headless device flow
 - Anonymous update/delete requests carry `claim_token` only in the
   `X-Slidesfly-Claim-Token` header; credential-bearing routes reject every query
   parameter. Account claim sends tokens only in its JSON body.
-- Install CLI only via https://slidesfly.com/install.sh (or a reviewed PATH binary) — never ad-hoc `/tmp` + `cli.mjs`.
-- Anonymous `publish --json` must not print `claim_token` (CLI ≥ 0.1.1 keeps it in local config only).
+- Prefer the bundled runner. Install a PATH CLI only through the official technical quickstart or a
+  reviewed binary—never ad-hoc `/tmp` + `cli.mjs`.
+- Anonymous `publish --json` must not print `claim_token` (runner/CLI ≥ 0.1.3 keeps it in local
+  config only).
 - Default visibility is `unlisted` unless the user explicitly asks for `public`.
 - Share URLs live on `slidesfly.xyz`; SaaS dashboard lives on `slidesfly.com`.
 
-<!-- slidesfly-skill version: 0.1.1 -->
+<!-- slidesfly-skill version: 0.2.0 -->
