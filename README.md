@@ -16,9 +16,10 @@ developers can inspect, test, and reuse.
 | [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
 | [`claude/slidesfly`](claude/slidesfly) | Package-ready | Claude Code plugin with the Skill and hosted MCP |
-| [`cursor/slidesfly`](cursor/slidesfly) | Preflight-ready; not submitted | Cursor plugin with the Skill and bundled CLI runner |
+| [`cursor/slidesfly`](cursor/slidesfly) | Submitted; review pending | Cursor plugin with the Skill and bundled CLI runner |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
+| [`examples/frontend-slides`](examples/frontend-slides) | Live-verified fixture | Pinned Frontend Slides single-file compatibility fixture |
 | [`examples/revealjs`](examples/revealjs) | Live-verified fixture | Reveal.js 6.0.1 multi-file build |
 | [`examples/slidev`](examples/slidev) | Live-verified fixture | Slidev 52.18.1 static build |
 | [`examples/marp`](examples/marp) | Live-verified fixture | Marp CLI 4.5.0 single-file export |
@@ -57,8 +58,8 @@ commit the key to this repository.
 The Cursor package intentionally does not bundle the API-key-only hosted MCP. Cursor Marketplace
 plugins currently have no stable install-time secret-input flow for that configuration, while the
 bundled Slidesfly runner already supports anonymous publishing and the user's existing CLI login.
-See the package README for the exact boundary. The package has not been submitted to or accepted by
-Cursor.
+See the package README for the exact boundary. The package was submitted on 2026-08-01 and has not
+been accepted or published by Cursor.
 
 Publish a deck from GitHub Actions with:
 
@@ -81,7 +82,8 @@ using it.
 - The hosted MCP endpoint is `https://slidesfly.com/api/mcp` and requires a Slidesfly API key.
 - Public npm packages are not assumed by this repository.
 - Multi-file zip publishing requires an eligible authenticated plan.
-- Every example links to a public reader URL verified on 2026-07-29.
+- Every example marked live links to a reader URL; each fixture records its own verification date
+  and evidence boundary.
 
 ## Releases
 
