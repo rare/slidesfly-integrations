@@ -1,0 +1,936 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A reproducible Frontend Slides compatibility fixture published with Slidesfly."
+    />
+    <title>Frontend Slides to Slidesfly · compatibility fixture</title>
+    <link rel="icon" href="data:," />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=Nunito:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ===========================================
+         THEME: SWISS MODERN
+         Change these variables to restyle the deck.
+         =========================================== */
+      :root {
+        --stage-bg: #d7d5cf;
+        --slide-bg: #f4f1e8;
+        --ink: #121212;
+        --muted: #625f58;
+        --red: #ef3e23;
+        --blue: #1546c7;
+        --line: rgba(18, 18, 18, 0.2);
+        --font-display: 'Archivo', sans-serif;
+        --font-body: 'Nunito', sans-serif;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      /* ===========================================
+         RESET
+         =========================================== */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ===========================================
+         FIXED 16:9 STAGE: MANDATORY BASE STYLES
+         Included verbatim from frontend-slides viewport-base.css
+         at commit 9906a34d640d2111f724544cbc50f7f130569ae1.
+         =========================================== */
+
+      /* 1. Lock the browser viewport */
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background: var(--stage-bg, #000);
+      }
+
+      /* 2. Full-window deck viewport */
+      .deck-viewport {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background: var(--stage-bg, #000);
+      }
+
+      /* 3. Fixed 16:9 design canvas.
+         JavaScript sets transform: translate(...) scale(...). */
+      .deck-stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        transform-origin: 0 0;
+        background: var(--slide-bg, #fff);
+      }
+
+      /* 4. Slides stack inside the fixed stage.
+         Content must be laid out at 1920×1080, not reflowed per device. */
+      .slide {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        display: block;
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        background: var(--slide-bg, #fff);
+      }
+
+      .slide.active,
+      .slide.visible {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+        z-index: 1;
+      }
+
+      /* 5. Keep media inside authored slide bounds */
+      img,
+      video,
+      canvas,
+      svg {
+        max-width: 100%;
+        max-height: 100%;
+      }
+
+      /* 6. Presentation chrome stays outside the slide design system */
+      .deck-controls {
+        position: fixed;
+        left: 50%;
+        bottom: 22px;
+        transform: translateX(-50%);
+        z-index: 1000;
+      }
+
+      /* 7. Print one fixed-size slide per page */
+      @media print {
+        html,
+        body {
+          width: 1920px;
+          height: auto;
+          overflow: visible;
+          background: #fff;
+        }
+
+        .deck-viewport {
+          position: static;
+          overflow: visible;
+          background: #fff;
+        }
+
+        .deck-stage {
+          position: static;
+          width: auto;
+          height: auto;
+          transform: none !important;
+          background: none;
+        }
+
+        .slide {
+          position: relative;
+          display: block !important;
+          visibility: visible !important;
+          opacity: 1 !important;
+          pointer-events: auto !important;
+          width: 1920px;
+          height: 1080px;
+          break-after: page;
+          page-break-after: always;
+        }
+
+        .slide:last-child {
+          break-after: auto;
+          page-break-after: auto;
+        }
+
+        .deck-controls {
+          display: none !important;
+        }
+      }
+
+      /* 8. Reduced motion */
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          transition-duration: 0.2s !important;
+        }
+      }
+
+      /* ===========================================
+         TYPOGRAPHY AND SHARED LAYOUT
+         =========================================== */
+      body {
+        color: var(--ink);
+        font-family: var(--font-body);
+      }
+
+      .slide {
+        padding: 86px 96px 80px;
+      }
+
+      .slide::before {
+        position: absolute;
+        top: 0;
+        left: 96px;
+        width: 1728px;
+        height: 18px;
+        background: var(--ink);
+        content: '';
+      }
+
+      .eyebrow,
+      .index,
+      .meta,
+      .kbd,
+      code {
+        font-family: var(--font-display);
+      }
+
+      .eyebrow {
+        color: var(--red);
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .index {
+        position: absolute;
+        top: 78px;
+        right: 96px;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      h1,
+      h2 {
+        font-family: var(--font-display);
+        font-weight: 900;
+        letter-spacing: -0.065em;
+      }
+
+      h1 {
+        max-width: 13ch;
+        font-size: 134px;
+        line-height: 0.9;
+      }
+
+      h2 {
+        max-width: 12ch;
+        font-size: 104px;
+        line-height: 0.92;
+      }
+
+      p {
+        font-size: 32px;
+        line-height: 1.35;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(34px);
+        transition:
+          opacity 0.48s var(--ease-out-expo),
+          transform 0.48s var(--ease-out-expo);
+      }
+
+      .slide.visible .reveal {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .slide.visible .reveal:nth-child(2) {
+        transition-delay: 90ms;
+      }
+
+      .slide.visible .reveal:nth-child(3) {
+        transition-delay: 180ms;
+      }
+
+      .slide.visible .reveal:nth-child(4) {
+        transition-delay: 270ms;
+      }
+
+      .grid-mark {
+        position: absolute;
+        border: 3px solid var(--ink);
+      }
+
+      .nav-help {
+        position: absolute;
+        right: 96px;
+        bottom: 70px;
+        color: var(--muted);
+        font-size: 22px;
+      }
+
+      .kbd {
+        display: inline-grid;
+        min-width: 34px;
+        height: 34px;
+        margin-left: 8px;
+        place-items: center;
+        border: 2px solid var(--ink);
+        color: var(--ink);
+        font-size: 18px;
+        font-weight: 800;
+      }
+
+      /* ===========================================
+         SLIDE 1: TITLE
+         =========================================== */
+      .title-layout {
+        display: grid;
+        height: 100%;
+        grid-template-columns: 1.25fr 0.75fr;
+        align-items: center;
+        gap: 96px;
+      }
+
+      .title-copy {
+        display: grid;
+        gap: 34px;
+      }
+
+      .title-copy p {
+        max-width: 29ch;
+        color: var(--muted);
+      }
+
+      .handoff-diagram {
+        position: relative;
+        height: 640px;
+        border: 4px solid var(--ink);
+        background:
+          linear-gradient(var(--line) 2px, transparent 2px),
+          linear-gradient(90deg, var(--line) 2px, transparent 2px),
+          #e4e1d8;
+        background-size: 96px 96px;
+      }
+
+      .artifact-block {
+        position: absolute;
+        left: 76px;
+        top: 82px;
+        width: 360px;
+        height: 230px;
+        padding: 34px;
+        background: var(--blue);
+        color: white;
+      }
+
+      .artifact-block strong,
+      .reader-block strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 46px;
+        line-height: 1;
+      }
+
+      .artifact-block span,
+      .reader-block span {
+        display: block;
+        margin-top: 26px;
+        font-size: 24px;
+      }
+
+      .reader-block {
+        position: absolute;
+        right: 76px;
+        bottom: 74px;
+        width: 360px;
+        height: 230px;
+        padding: 34px;
+        border: 4px solid var(--ink);
+        background: var(--red);
+      }
+
+      .arrow-line {
+        position: absolute;
+        top: 310px;
+        left: 378px;
+        width: 180px;
+        height: 4px;
+        transform: rotate(38deg);
+        background: var(--ink);
+      }
+
+      .arrow-line::after {
+        position: absolute;
+        right: -2px;
+        bottom: -12px;
+        width: 24px;
+        height: 24px;
+        transform: rotate(45deg);
+        border-top: 4px solid var(--ink);
+        border-right: 4px solid var(--ink);
+        content: '';
+      }
+
+      /* ===========================================
+         SLIDE 2: ARTIFACT
+         =========================================== */
+      .artifact-layout {
+        display: grid;
+        height: 100%;
+        grid-template-columns: 0.82fr 1.18fr;
+        align-items: center;
+        gap: 110px;
+      }
+
+      .artifact-copy {
+        display: grid;
+        gap: 32px;
+      }
+
+      .artifact-copy p {
+        max-width: 26ch;
+        color: var(--muted);
+      }
+
+      .file-card {
+        position: relative;
+        height: 680px;
+        padding: 76px 70px;
+        border: 5px solid var(--ink);
+        background: #fff;
+      }
+
+      .file-card::after {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 150px;
+        height: 150px;
+        background: linear-gradient(45deg, transparent 49%, var(--ink) 50% 52%, var(--red) 53%);
+        content: '';
+      }
+
+      .file-name {
+        color: var(--blue);
+        font-family: var(--font-display);
+        font-size: 72px;
+        font-weight: 900;
+        letter-spacing: -0.05em;
+      }
+
+      .file-rule {
+        width: 100%;
+        height: 5px;
+        margin: 38px 0 52px;
+        background: var(--ink);
+      }
+
+      .file-list {
+        display: grid;
+        gap: 30px;
+        list-style: none;
+      }
+
+      .file-list li {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 20px;
+        align-items: center;
+        font-size: 30px;
+        font-weight: 700;
+      }
+
+      .file-list li::before {
+        width: 26px;
+        height: 26px;
+        background: var(--red);
+        content: '';
+      }
+
+      /* ===========================================
+         SLIDE 3: CHECKS
+         =========================================== */
+      .checks-layout {
+        display: grid;
+        height: 100%;
+        grid-template-rows: auto 1fr;
+        gap: 62px;
+        padding-top: 90px;
+      }
+
+      .checks-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+      }
+
+      .checks-heading p {
+        max-width: 32ch;
+        color: var(--muted);
+      }
+
+      .check-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+      }
+
+      .check-card {
+        display: grid;
+        min-height: 460px;
+        grid-template-rows: auto 1fr auto;
+        padding: 42px;
+        border: 4px solid var(--ink);
+        background: #fff;
+      }
+
+      .check-card:nth-child(2) {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .check-number {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 900;
+      }
+
+      .check-card h3 {
+        align-self: center;
+        font-family: var(--font-display);
+        font-size: 56px;
+        line-height: 0.98;
+        letter-spacing: -0.05em;
+      }
+
+      .check-card p {
+        font-size: 25px;
+      }
+
+      /* ===========================================
+         SLIDE 4: COMMAND
+         =========================================== */
+      .command-layout {
+        display: grid;
+        height: 100%;
+        grid-template-columns: 0.7fr 1.3fr;
+        align-items: center;
+        gap: 90px;
+      }
+
+      .command-copy {
+        display: grid;
+        gap: 32px;
+      }
+
+      .command-copy p {
+        max-width: 24ch;
+        color: var(--muted);
+      }
+
+      .terminal {
+        position: relative;
+        min-height: 530px;
+        padding: 82px 62px 58px;
+        background: var(--ink);
+        color: #f4f1e8;
+      }
+
+      .terminal::before {
+        position: absolute;
+        top: 34px;
+        left: 40px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--red);
+        box-shadow: 30px 0 #f0b429, 60px 0 #25a55f;
+        content: '';
+      }
+
+      .terminal code {
+        display: block;
+        font-size: 31px;
+        font-weight: 600;
+        line-height: 1.65;
+        white-space: pre-wrap;
+      }
+
+      .terminal .prompt {
+        color: #86b6ff;
+      }
+
+      .terminal .result {
+        display: block;
+        margin-top: 48px;
+        padding-top: 38px;
+        border-top: 2px solid rgba(255, 255, 255, 0.28);
+        color: #bab6aa;
+        font-size: 24px;
+      }
+
+      /* ===========================================
+         SLIDE 5: RESULT
+         =========================================== */
+      .result-layout {
+        display: grid;
+        height: 100%;
+        grid-template-columns: 1.1fr 0.9fr;
+        align-items: center;
+        gap: 96px;
+      }
+
+      .result-copy {
+        display: grid;
+        gap: 34px;
+      }
+
+      .result-copy p {
+        max-width: 29ch;
+        color: var(--muted);
+      }
+
+      .result-links {
+        display: grid;
+        gap: 20px;
+        margin-top: 24px;
+      }
+
+      .result-links a {
+        display: flex;
+        min-height: 88px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        border: 3px solid var(--ink);
+        color: var(--ink);
+        font-family: var(--font-display);
+        font-size: 25px;
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .result-links a:first-child {
+        background: var(--red);
+      }
+
+      .result-poster {
+        position: relative;
+        height: 680px;
+        border: 5px solid var(--ink);
+        background: var(--blue);
+      }
+
+      .result-poster::before {
+        position: absolute;
+        inset: 62px;
+        border: 5px solid #fff;
+        content: '';
+      }
+
+      .result-poster::after {
+        position: absolute;
+        top: 144px;
+        right: 144px;
+        bottom: 144px;
+        left: 144px;
+        border-radius: 50%;
+        background: var(--red);
+        content: '';
+      }
+
+      .poster-label {
+        position: absolute;
+        right: 0;
+        bottom: 24px;
+        left: 0;
+        z-index: 2;
+        color: #fff;
+        font-family: var(--font-display);
+        font-size: 27px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      /* ===========================================
+         PRESENTATION CHROME
+         Kept outside the 1920×1080 stage.
+         =========================================== */
+      .progress {
+        width: min(420px, 46vw);
+        height: 5px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.44);
+      }
+
+      .progress-fill {
+        width: 20%;
+        height: 100%;
+        background: var(--red);
+        transition: width 240ms ease;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="deck-viewport">
+      <main class="deck-stage" id="deckStage" aria-live="polite">
+        <section class="slide active" aria-label="Slide 1 of 5">
+          <span class="index">01 / 05</span>
+          <div class="title-layout">
+            <div class="title-copy">
+              <p class="eyebrow reveal">Frontend Slides → Slidesfly</p>
+              <h1 class="reveal">The deck is done. Make it shareable.</h1>
+              <p class="reveal">
+                A reproducible compatibility fixture for a finished, single-file HTML presentation.
+              </p>
+            </div>
+            <div class="handoff-diagram reveal" aria-hidden="true">
+              <div class="artifact-block">
+                <strong>deck.html</strong>
+                <span>authored at 1920 × 1080</span>
+              </div>
+              <div class="arrow-line"></div>
+              <div class="reader-block">
+                <strong>Reader URL</strong>
+                <span>same artifact, hosted</span>
+              </div>
+            </div>
+          </div>
+          <p class="nav-help">Navigate <span class="kbd">←</span><span class="kbd">→</span></p>
+        </section>
+
+        <section class="slide" aria-label="Slide 2 of 5">
+          <span class="index">02 / 05</span>
+          <div class="artifact-layout">
+            <div class="artifact-copy">
+              <p class="eyebrow reveal">Artifact contract</p>
+              <h2 class="reveal">One HTML file is the handoff.</h2>
+              <p class="reveal">No framework conversion step is needed after the deck is generated.</p>
+            </div>
+            <div class="file-card reveal">
+              <p class="file-name">deck.html</p>
+              <div class="file-rule"></div>
+              <ul class="file-list">
+                <li>Fixed 16:9 stage</li>
+                <li>Inline CSS and JavaScript</li>
+                <li>Keyboard and touch navigation</li>
+                <li>Reduced-motion fallback</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" aria-label="Slide 3 of 5">
+          <span class="index">03 / 05</span>
+          <div class="checks-layout">
+            <div class="checks-heading">
+              <div>
+                <p class="eyebrow reveal">Pre-publish gate</p>
+                <h2 class="reveal">Verify the artifact, not the promise.</h2>
+              </div>
+              <p class="reveal">The case passes only when the browser behavior survives the reader sandbox.</p>
+            </div>
+            <div class="check-grid">
+              <article class="check-card reveal">
+                <span class="check-number">01</span>
+                <h3>Scale</h3>
+                <p>The 1920×1080 stage fits desktop and phone viewports without reflow.</p>
+              </article>
+              <article class="check-card reveal">
+                <span class="check-number">02</span>
+                <h3>Navigate</h3>
+                <p>Arrow keys, swipe, wheel, and reader controls advance the same slide state.</p>
+              </article>
+              <article class="check-card reveal">
+                <span class="check-number">03</span>
+                <h3>Contain</h3>
+                <p>No text overflow, clipped content, or visually overlapping panels.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" aria-label="Slide 4 of 5">
+          <span class="index">04 / 05</span>
+          <div class="command-layout">
+            <div class="command-copy">
+              <p class="eyebrow reveal">Publish</p>
+              <h2 class="reveal">Keep the source. Add a URL.</h2>
+              <p class="reveal">The CLI uploads the existing HTML file; it does not regenerate the deck.</p>
+            </div>
+            <div class="terminal reveal">
+              <code><span class="prompt">$</span> slidesfly publish \
+  examples/frontend-slides/deck.html \
+  --title "Frontend Slides compatibility fixture" \
+  --json</code>
+              <span class="result">Output: a Slidesfly reader URL plus local claim metadata.</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="slide" aria-label="Slide 5 of 5">
+          <span class="index">05 / 05</span>
+          <div class="result-layout">
+            <div class="result-copy">
+              <p class="eyebrow reveal">Compatibility result</p>
+              <h2 class="reveal">A public proof, with the boundary visible.</h2>
+              <p class="reveal">
+                This independent fixture tests one pinned Frontend Slides revision. It is not an
+                upstream endorsement or a guarantee for every generated deck.
+              </p>
+              <div class="result-links reveal">
+                <a href="https://github.com/zarazhangrui/frontend-slides/tree/9906a34d640d2111f724544cbc50f7f130569ae1">
+                  Pinned upstream source <span>↗</span>
+                </a>
+                <a href="https://slidesfly.com/guides/publish-html-presentation-online">
+                  Slidesfly publishing guide <span>↗</span>
+                </a>
+              </div>
+            </div>
+            <div class="result-poster reveal" aria-hidden="true">
+              <span class="poster-label">source → proof → reader</span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="deck-controls" aria-hidden="true">
+      <div class="progress"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <script>
+      /* ===========================================
+         SLIDE PRESENTATION CONTROLLER
+         Handles fixed-stage scaling and all local navigation.
+         =========================================== */
+      class SlidePresentation {
+        constructor() {
+          this.slides = [...document.querySelectorAll('.slide')];
+          this.currentSlide = 0;
+          this.stage = document.getElementById('deckStage');
+          this.progress = document.getElementById('progressFill');
+          this.touchStartX = null;
+          this.wheelLocked = false;
+          this.setupStageScale();
+          this.setupKeyboardNav();
+          this.setupTouchNav();
+          this.setupWheelNav();
+          this.setupReaderBridge();
+          this.showSlide(0);
+        }
+
+        setupStageScale() {
+          const scale = () => {
+            const factor = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+            const x = (window.innerWidth - 1920 * factor) / 2;
+            const y = (window.innerHeight - 1080 * factor) / 2;
+            this.stage.style.transform = `translate(${x}px, ${y}px) scale(${factor})`;
+          };
+          scale();
+          window.addEventListener('resize', scale);
+        }
+
+        setupKeyboardNav() {
+          document.addEventListener('keydown', (event) => {
+            if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(event.key)) {
+              event.preventDefault();
+              this.next();
+            }
+            if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(event.key)) {
+              event.preventDefault();
+              this.prev();
+            }
+            if (event.key === 'Home') this.showSlide(0);
+            if (event.key === 'End') this.showSlide(this.slides.length - 1);
+          });
+        }
+
+        setupTouchNav() {
+          document.addEventListener(
+            'touchstart',
+            (event) => {
+              this.touchStartX = event.changedTouches[0].clientX;
+            },
+            { passive: true },
+          );
+          document.addEventListener(
+            'touchend',
+            (event) => {
+              if (this.touchStartX === null) return;
+              const delta = event.changedTouches[0].clientX - this.touchStartX;
+              if (Math.abs(delta) > 48) delta < 0 ? this.next() : this.prev();
+              this.touchStartX = null;
+            },
+            { passive: true },
+          );
+        }
+
+        setupWheelNav() {
+          document.addEventListener(
+            'wheel',
+            (event) => {
+              if (this.wheelLocked || Math.abs(event.deltaY) < 24) return;
+              this.wheelLocked = true;
+              event.deltaY > 0 ? this.next() : this.prev();
+              window.setTimeout(() => {
+                this.wheelLocked = false;
+              }, 420);
+            },
+            { passive: true },
+          );
+        }
+
+        setupReaderBridge() {
+          window.addEventListener('message', (event) => {
+            const data = event.data;
+            if (!data || data.source !== 'slidesfly') return;
+            if (data.action === 'next') this.next();
+            if (data.action === 'prev') this.prev();
+            if (data.action === 'first') this.showSlide(0);
+            if (data.action === 'last') this.showSlide(this.slides.length - 1);
+          });
+        }
+
+        next() {
+          this.showSlide(this.currentSlide + 1);
+        }
+
+        prev() {
+          this.showSlide(this.currentSlide - 1);
+        }
+
+        showSlide(index) {
+          this.currentSlide = Math.max(0, Math.min(index, this.slides.length - 1));
+          this.slides.forEach((slide, slideIndex) => {
+            const active = slideIndex === this.currentSlide;
+            slide.classList.toggle('active', active);
+            slide.classList.toggle('visible', active);
+            slide.setAttribute('aria-hidden', String(!active));
+          });
+          this.progress.style.width = `${((this.currentSlide + 1) / this.slides.length) * 100}%`;
+        }
+      }
+
+      new SlidePresentation();
+    </script>
+  </body>
+</html>

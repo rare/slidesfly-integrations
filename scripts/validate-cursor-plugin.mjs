@@ -52,7 +52,8 @@ await assert.rejects(
   /ENOENT/,
   'Cursor package must not bundle an API-key-only hosted MCP config.',
 );
-assert.match(readme, /has \*\*not\*\* been\s+submitted to or accepted by Cursor/);
+assert.match(readme, /submitted on 2026-08-01/);
+assert.match(readme, /has not\s+been accepted or published by Cursor/);
 assert.match(readme, /no stable install-time secret-input flow/);
 assert.match(readme, /https:\/\/slidesfly\.com\/privacy/);
 assert.match(readme, /https:\/\/slidesfly\.com\/terms/);

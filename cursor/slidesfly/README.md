@@ -1,7 +1,7 @@
 # Slidesfly for Cursor
 
-This is the public-source candidate for a free Cursor Marketplace plugin. It has **not** been
-submitted to or accepted by Cursor.
+This is the public source for a free Cursor Marketplace plugin submitted on 2026-08-01. It has not
+been accepted or published by Cursor.
 
 ## Included
 
