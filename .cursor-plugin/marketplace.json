@@ -1,0 +1,17 @@
+{
+  "name": "slidesfly-integrations",
+  "owner": {
+    "name": "Slidesfly",
+    "email": "mcp@slidesfly.com"
+  },
+  "metadata": {
+    "description": "Official open-source integrations for Slidesfly."
+  },
+  "plugins": [
+    {
+      "name": "slidesfly",
+      "source": "./cursor/slidesfly",
+      "description": "Publish and manage existing HTML presentation files with Slidesfly."
+    }
+  ]
+}
