@@ -1,7 +1,12 @@
 # Slidesfly integrations and examples
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/rare/slidesfly-integrations/badge)](https://scorecard.dev/viewer/?uri=github.com/rare/slidesfly-integrations)
+
 Public, reproducible integration assets for
 [Slidesfly](https://slidesfly.com), the publishing layer for existing HTML presentations.
+
+The Scorecard badge reports the current automated repository checks. It is not a certification or
+an endorsement by OpenSSF.
 
 This repository intentionally excludes the private Slidesfly SaaS application, infrastructure,
 credentials, customer data, and billing implementation. It contains only integration surfaces that
