@@ -6,6 +6,8 @@ const manifestUrl = new URL('../releases/npm-packages.json', import.meta.url);
 const manifest = JSON.parse(await readFile(manifestUrl, 'utf8'));
 
 assert.equal(manifest.schema_version, 1);
+assert.match(manifest.github_repository, /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/);
+assert.match(manifest.release_tag, /^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/);
 assert.equal(Array.isArray(manifest.packages), true);
 assert.equal(manifest.packages.length, 2);
 

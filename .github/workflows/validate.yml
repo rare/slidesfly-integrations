@@ -55,6 +55,8 @@ jobs:
           npx --yes @google/gemini-cli@0.53.0 extensions validate .
       - name: Verify public npm release checksums
         run: node scripts/verify-npm-release.mjs
+      - name: Test release attestation validation
+        run: node --test scripts/release-attestation.test.mjs
       - name: Build Reveal.js example
         working-directory: examples/revealjs
         run: npm ci && npm audit --audit-level=moderate && npm run build
