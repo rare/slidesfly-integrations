@@ -13,10 +13,14 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+      - name: Verify workflow action pins
+        run: node scripts/validate-workflow-pins.mjs
       - name: Test publish action
         run: actions/publish/test.sh
       - name: Validate Marketplace entry point
@@ -48,12 +52,12 @@ jobs:
         run: node scripts/verify-npm-release.mjs
       - name: Build Reveal.js example
         working-directory: examples/revealjs
-        run: npm ci && npm run build
+        run: npm ci && npm audit --audit-level=moderate && npm run build
       - name: Test reader compatibility injector
         run: node --test examples/inject-slidesfly-reader-bridge.test.mjs
       - name: Build Slidev example
         working-directory: examples/slidev
-        run: npm ci && npm run build
+        run: npm ci && npm audit --audit-level=moderate && npm run build
       - name: Build Marp example
         working-directory: examples/marp
-        run: npm ci && npm run build
+        run: npm ci && npm audit --audit-level=moderate && npm run build
