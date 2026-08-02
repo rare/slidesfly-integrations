@@ -115,7 +115,9 @@ Release assets mirror the verified npm tarballs and include `SHA256SUMS` and `SH
 registry remains the canonical package source.
 
 See [MAINTENANCE.md](MAINTENANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and
-[SECURITY.md](SECURITY.md) before relying on a public-beta integration in production.
+[SECURITY.md](SECURITY.md) before relying on a public-beta integration in production. The
+[OpenSSF Best Practices readiness notes](docs/openssf-best-practices.md) map current public evidence
+and remaining self-assessment gates without claiming a badge.
 
 ## License
 

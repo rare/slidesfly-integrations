@@ -34,5 +34,9 @@ Pull requests are reviewed for correctness, credential handling, reproducibility
 evidence supports the claim being made. A passing automated check does not replace review of the
 changed workflow permissions or downloaded artifacts.
 
+Major new functionality must include or update automated tests. If a meaningful automated test is
+not practical, the pull request must explain why, document the manual verification performed, and
+receive explicit maintainer approval before merge.
+
 Bug reports and compatibility requests should use the issue templates. Security reports must follow
 [SECURITY.md](SECURITY.md).
