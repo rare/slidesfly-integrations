@@ -114,6 +114,12 @@ supply-chain stability, or use a reviewed release tag when a moving major tag is
 Release assets mirror the verified npm tarballs and include `SHA256SUMS` and `SHA512SUMS`; the
 registry remains the canonical package source.
 
+The manual [release-attestation workflow](.github/workflows/attest-release.yml) can add a
+Sigstore-signed in-toto release attestation after re-verifying both the npm artifacts and GitHub
+release assets. See [release attestation verification](docs/release-attestations.md) for the exact
+claim boundary and consumer command. A release is not signed merely because the workflow exists;
+check the release assets and verify the bundle before relying on it.
+
 See [MAINTENANCE.md](MAINTENANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and
 [SECURITY.md](SECURITY.md) before relying on a public-beta integration in production. The
 [OpenSSF Best Practices readiness notes](docs/openssf-best-practices.md) map current public evidence

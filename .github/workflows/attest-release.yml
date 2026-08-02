@@ -1,0 +1,93 @@
+name: Attest release assets
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: release-attestation
+  cancel-in-progress: false
+
+jobs:
+  attest:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      contents: write
+      id-token: write
+    steps:
+      - name: Checkout trusted release metadata
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+      - name: Read release metadata
+        id: release
+        run: |
+          manifest_repository=$(node -p "require('./releases/npm-packages.json').github_repository")
+          test "$manifest_repository" = "$GITHUB_REPOSITORY"
+          echo "tag=$(node -p \"require('./releases/npm-packages.json').release_tag\")" >> "$GITHUB_OUTPUT"
+      - name: Verify canonical npm artifacts
+        run: node scripts/verify-npm-release.mjs
+      - name: Download immutable release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          mkdir release-assets
+          gh release download "$RELEASE_TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --dir release-assets \
+            --pattern '*.tgz' \
+            --pattern 'SHA256SUMS' \
+            --pattern 'SHA512SUMS'
+      - name: Verify release assets and prepare predicate
+        run: >-
+          node scripts/prepare-release-attestation.mjs
+          release-assets
+          release-attestation-predicate.json
+      - name: Reject an existing signature asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          signature_name="slidesfly-integrations-${RELEASE_TAG}.sigstore.json"
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json assets --jq '.assets[].name' | grep -Fxq "$signature_name"; then
+            echo "Release signature asset already exists: $signature_name" >&2
+            exit 1
+          fi
+      - name: Sign release attestation with Sigstore
+        id: attest
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-checksums: release-assets/SHA256SUMS
+          predicate-type: https://in-toto.io/attestation/release/v0.2
+          predicate-path: release-attestation-predicate.json
+      - name: Verify signature bundle before publication
+        env:
+          ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+        run: |
+          for artifact in release-assets/*.tgz; do
+            gh attestation verify "$artifact" \
+              --repo "$GITHUB_REPOSITORY" \
+              --bundle "$ATTESTATION_BUNDLE" \
+              --predicate-type https://in-toto.io/attestation/release/v0.2 \
+              --signer-workflow "$GITHUB_REPOSITORY/.github/workflows/attest-release.yml" \
+              --source-ref refs/heads/main
+          done
+      - name: Publish signature bundle on the release
+        env:
+          ATTESTATION_BUNDLE: ${{ steps.attest.outputs.bundle-path }}
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          signature_name="slidesfly-integrations-${RELEASE_TAG}.sigstore.json"
+          cp "$ATTESTATION_BUNDLE" "release-assets/$signature_name"
+          gh release upload "$RELEASE_TAG" "release-assets/$signature_name" \
+            --repo "$GITHUB_REPOSITORY"
