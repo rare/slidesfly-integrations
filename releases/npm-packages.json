@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-08-02",
+  "packages": [
+    {
+      "name": "@slidesfly/cli",
+      "version": "0.1.3",
+      "filename": "slidesfly-cli-0.1.3.tgz",
+      "tarball": "https://registry.npmjs.org/@slidesfly/cli/-/cli-0.1.3.tgz",
+      "shasum": "4e03489ea4ad1dfc3325cc63836cde2860e792d2",
+      "integrity": "sha512-2PZ9vTpIpD5EB3A1ALborsiKP6K2nBxGCOix4GtrDFbWUu8Rz6u8L0WxAGxnKonXl+QO1jD5HE8XE93AALyCtg==",
+      "sha256": "fe220c10218f250a94a16baed4c4fef1b2b56de4dc406c9df3ca586984b3a781",
+      "sha512": "d8f67dbd3a48a43e4407703500b6e8aec88a3fa2b69c1c4608e8b1e06b6b0c56d652ef11cfabbc2f45b1006c672a89d797e40ed630f91c4f1713ddc000bc82b6"
+    },
+    {
+      "name": "@slidesfly/mcp",
+      "version": "0.1.0",
+      "filename": "slidesfly-mcp-0.1.0.tgz",
+      "tarball": "https://registry.npmjs.org/@slidesfly/mcp/-/mcp-0.1.0.tgz",
+      "shasum": "f544ec48f405b30764576a63eea7ec6bb0993f4b",
+      "integrity": "sha512-xL+WnanJwbeEfBOH3m4LCfzp5Vk5Zco5u4BT19Kk6IYYd/xLpliMpTHmmuyY9LtCLeYn9s2IsGG0EH7zjL/qNA==",
+      "sha256": "aa565d913e9b2442d531febf349681484972ff49d85f8ae482f3dfa1805c58fc",
+      "sha512": "c4bf969da9c9c1b7847c1387de6e0b09fce9e5593965ca39bb8053d7d2a4e8861877fc4ba6588ca531e69aec98f4bb422de627f6cd88b061b4107ef38cbfea34"
+    }
+  ]
+}

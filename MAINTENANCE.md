@@ -19,6 +19,12 @@ successful build is not automatically labeled as a live Slidesfly reader test.
 
 Release notes must name the evidence run, known limitations, and any required migration.
 
+When a release advertises public npm packages, `releases/npm-packages.json` must pin the exact
+registry tarball, npm integrity value, SHA-1 shasum, SHA-256, and SHA-512. Run
+`node scripts/verify-npm-release.mjs` against the live registry before creating the release, and
+attach the verified tarballs plus `SHA256SUMS` and `SHA512SUMS` to the GitHub Release. A package
+with only one published version must not claim that downgrade rollback was tested.
+
 ## Skill runner parity
 
 `skills/slidesfly/scripts/slidesfly.mjs` and channel-specific copies are generated artifacts. Do

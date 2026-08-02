@@ -24,6 +24,17 @@ cli_file="$action_temp/cli.mjs"
 curl --fail --silent --show-error --location "$SLIDESFLY_CLI_URL" --output "$cli_file"
 chmod +x "$cli_file"
 
+actual_cli_sha256="$(node -e '
+  const fs = require("node:fs");
+  const crypto = require("node:crypto");
+  const bytes = fs.readFileSync(process.argv[1]);
+  process.stdout.write(crypto.createHash("sha256").update(bytes).digest("hex"));
+' "$cli_file")"
+if [[ "$actual_cli_sha256" != "$SLIDESFLY_CLI_SHA256" ]]; then
+  echo "::error::Slidesfly CLI checksum mismatch."
+  exit 1
+fi
+
 actual_cli_version="$(node "$cli_file" --version)"
 if [[ "$actual_cli_version" != "$SLIDESFLY_CLI_VERSION" ]]; then
   echo "::error::Expected Slidesfly CLI $SLIDESFLY_CLI_VERSION, received $actual_cli_version."

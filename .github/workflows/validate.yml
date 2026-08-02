@@ -24,8 +24,8 @@ jobs:
           test -f action.yml
           grep -q '^name: Publish HTML presentation to Slidesfly$' action.yml
           grep -q 'GITHUB_ACTION_PATH/actions/publish/publish.sh' action.yml
-          grep -q 'uses: rare/slidesfly-integrations@v0.3.0' README.md
-          node -e "const fs=require('node:fs'); for (const file of ['action.yml','actions/publish/action.yml']) { if (!fs.readFileSync(file,'utf8').includes('SLIDESFLY_CLI_VERSION: 0.1.2')) process.exit(1) }"
+          grep -q 'uses: rare/slidesfly-integrations@v0.3.1' README.md
+          node -e "const fs=require('node:fs'); for (const file of ['action.yml','actions/publish/action.yml']) { const source=fs.readFileSync(file,'utf8'); if (!source.includes('SLIDESFLY_CLI_VERSION: 0.1.3') || !source.includes('SLIDESFLY_CLI_SHA256: cd94667fc714e998d87fd47e1ad94bd4d44e23a0b0f0fb70671df1a22365b699')) process.exit(1) }"
       - name: Validate Skill and MCP metadata
         run: |
           node -e "const fs=require('node:fs'); const skill=fs.readFileSync('skills/slidesfly/SKILL.md','utf8'); if(!skill.includes('name: slidesfly') || !skill.includes('version: 0.2.0')) process.exit(1)"
@@ -44,6 +44,8 @@ jobs:
         run: |
           node scripts/validate-gemini-extension.mjs
           npx --yes @google/gemini-cli@0.53.0 extensions validate .
+      - name: Verify public npm release checksums
+        run: node scripts/verify-npm-release.mjs
       - name: Build Reveal.js example
         working-directory: examples/revealjs
         run: npm ci && npm run build

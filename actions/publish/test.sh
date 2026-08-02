@@ -15,7 +15,7 @@ printf '<!doctype html><title>Action fixture</title>\n' >"$mock_deck"
 cat >"$mock_cli" <<'EOF'
 #!/usr/bin/env node
 if (process.argv.includes('--version')) {
-  process.stdout.write('0.1.2\n');
+  process.stdout.write('0.1.3\n');
   process.exit(0);
 }
 if (!process.argv.includes('publish')) process.exit(2);
@@ -32,6 +32,29 @@ process.stdout.write(
 );
 EOF
 
+mock_cli_sha256="$(node -e '
+  const fs = require("node:fs");
+  const crypto = require("node:crypto");
+  process.stdout.write(crypto.createHash("sha256").update(fs.readFileSync(process.argv[1])).digest("hex"));
+' "$mock_cli")"
+
+if INPUT_FILE="$mock_deck" \
+  INPUT_API_KEY="sk_test_not_real" \
+  INPUT_TITLE="Action fixture" \
+  INPUT_DECK_ID="" \
+  INPUT_VISIBILITY="unlisted" \
+  SLIDESFLY_API_URL="https://slidesfly.example" \
+  SLIDESFLY_CLI_URL="file://$mock_cli" \
+  SLIDESFLY_CLI_VERSION="0.1.3" \
+  SLIDESFLY_CLI_SHA256="0000000000000000000000000000000000000000000000000000000000000000" \
+  RUNNER_TEMP="$test_temp" \
+  GITHUB_OUTPUT="$github_output" \
+  GITHUB_STEP_SUMMARY="$github_summary" \
+  "$(dirname "$0")/publish.sh" >/dev/null 2>&1; then
+  echo 'Expected checksum mismatch to fail.'
+  exit 1
+fi
+
 INPUT_FILE="$mock_deck" \
 INPUT_API_KEY="sk_test_not_real" \
 INPUT_TITLE="Action fixture" \
@@ -39,7 +62,8 @@ INPUT_DECK_ID="" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.2" \
+SLIDESFLY_CLI_VERSION="0.1.3" \
+SLIDESFLY_CLI_SHA256="$mock_cli_sha256" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_output" \
 GITHUB_STEP_SUMMARY="$github_summary" \
@@ -56,7 +80,8 @@ INPUT_DECK_ID="test-deck-id" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.2" \
+SLIDESFLY_CLI_VERSION="0.1.3" \
+SLIDESFLY_CLI_SHA256="$mock_cli_sha256" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_update_output" \
 GITHUB_STEP_SUMMARY="$github_update_summary" \

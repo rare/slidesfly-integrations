@@ -33,6 +33,8 @@ developers can inspect, test, and reuse.
 - [Framework compatibility matrix](https://slidesfly.com/guides/html-presentation-framework-compatibility)
 - [CLI documentation](https://slidesfly.com/docs/cli)
 - [Hosted MCP documentation](https://slidesfly.com/docs/mcp)
+- [npm CLI package](https://www.npmjs.com/package/@slidesfly/cli)
+- [npm MCP package](https://www.npmjs.com/package/@slidesfly/mcp)
 - [Gemini CLI extension manifest](gemini-extension.json)
 - [Claude Code plugin package](claude/slidesfly)
 - [Cursor plugin package](cursor/slidesfly)
@@ -45,10 +47,23 @@ Install the public Skill source with:
 npx skills add rare/slidesfly-integrations --skill slidesfly
 ```
 
+Install exact public npm versions with:
+
+```bash
+npm install --global @slidesfly/cli@0.1.3
+slidesfly --version
+npx -y @slidesfly/mcp@0.1.0
+```
+
+The registry tarball URLs, npm integrity values, and independently computed SHA-256/SHA-512
+checksums are recorded in [`releases/npm-packages.json`](releases/npm-packages.json). Verify the
+live registry artifacts with `node scripts/verify-npm-release.mjs` before mirroring or auditing
+them.
+
 Install the Gemini CLI extension from the public repository:
 
 ```bash
-gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.0
+gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.1
 ```
 
 Gemini CLI requests `SLIDESFLY_API_KEY` as a sensitive setting and stores it in the system
@@ -65,7 +80,7 @@ Publish a deck from GitHub Actions with:
 
 ```yaml
 - id: deck
-  uses: rare/slidesfly-integrations@v0.3.0
+  uses: rare/slidesfly-integrations@v0.3.1
   with:
     file: deck.html
     api-key: ${{ secrets.SLIDESFLY_API_KEY }}
@@ -78,9 +93,10 @@ using it.
 
 ## Current boundaries
 
-- The website installer is the supported public CLI distribution.
+- The website installer and `@slidesfly/cli@0.1.3` are supported public CLI distributions.
 - The hosted MCP endpoint is `https://slidesfly.com/api/mcp` and requires a Slidesfly API key.
-- Public npm packages are not assumed by this repository.
+- The stdio MCP package is `@slidesfly/mcp@0.1.0`; its local config remains separate from hosted
+  MCP bearer authentication.
 - Multi-file zip publishing requires an eligible authenticated plan.
 - Every example marked live links to a reader URL; each fixture records its own verification date
   and evidence boundary.
@@ -90,6 +106,8 @@ using it.
 Integration releases use semantic version tags. The root Action is released from the same public
 repository as the MCP, Skill, and framework fixtures. Pin a commit SHA for the strongest
 supply-chain stability, or use a reviewed release tag when a moving major tag is not available.
+Release assets mirror the verified npm tarballs and include `SHA256SUMS` and `SHA512SUMS`; the
+registry remains the canonical package source.
 
 See [MAINTENANCE.md](MAINTENANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and
 [SECURITY.md](SECURITY.md) before relying on a public-beta integration in production.
