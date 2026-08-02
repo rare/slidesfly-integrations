@@ -11,5 +11,8 @@
   "dependencies": {
     "@slidev/cli": "52.18.1",
     "@slidev/theme-default": "0.25.0"
+  },
+  "overrides": {
+    "dompurify": "3.4.12"
   }
 }
