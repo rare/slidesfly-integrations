@@ -26,6 +26,8 @@ jobs:
           test -f docs/openssf-best-practices.md
           grep -q 'No OpenSSF Best Practices badge has been earned yet' docs/openssf-best-practices.md
           grep -q 'Major new functionality must include or update automated tests' CONTRIBUTING.md
+          node scripts/validate-openssf-assessment.mjs
+          node --test scripts/validate-openssf-assessment.test.mjs
       - name: Test publish action
         run: actions/publish/test.sh
       - name: Validate Marketplace entry point

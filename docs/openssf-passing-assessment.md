@@ -1,4 +1,4 @@
-# OpenSSF Best Practices passing assessment draft
+# OpenSSF Best Practices passing assessment submission draft
 
 This document is a pre-application draft for the OpenSSF Best Practices passing level. It does not
 claim that `rare/slidesfly-integrations`, Slidesfly, or the private Slidesfly SaaS has earned a badge.
@@ -13,13 +13,14 @@ Only the project page on `bestpractices.dev` can establish badge status.
   [`ossf/best-practices-badge`](https://github.com/ossf/best-practices-badge/blob/76ccba67c6a70cb2a2d9c78040cb793a6f9124a1/criteria/criteria.yml),
   reviewed on 2026-08-03.
 - Repository evidence snapshot: public `main` commit
-  [`35db18b`](https://github.com/rare/slidesfly-integrations/commit/35db18ba4d8c78f4ccee2f36374f1bcc829083ca),
-  plus the locally validated CodeQL remediation commit `2a1c80a` on branch
-  `fix/codeql-message-actions`.
+  [`0ae4f25`](https://github.com/rare/slidesfly-integrations/commit/0ae4f25a973ef009c288ef3180237c98875f3d75),
+  including the merged CodeQL remediation, passing `main` CodeQL analysis, and the verified v0.3.1
+  Sigstore release-attestation workflow.
 
-`Met`, `N/A`, and `Unmet` below are proposed form answers, not accepted answers. `Owner confirm`
-requires a human attestation. `Merge fix` must not be changed to `Met` until the remediation is on
-`main` and CodeQL confirms the alerts are closed.
+`Met`, `N/A`, and `Unmet` below are proposed form answers, not accepted answers. The owner
+attestations required by `vulnerability_report_response`, `know_secure_design`, and
+`know_common_errors` were recorded on 2026-08-03. Repository-backed answers were rechecked against
+the live GitHub control plane on the same date.
 
 ## Form-answer draft
 
@@ -66,7 +67,7 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 | `report_archive` | MUST | Met | [GitHub Issues](https://github.com/rare/slidesfly-integrations/issues?q=is%3Aissue) and pull requests provide a public, searchable archive with stable URLs. |
 | `vulnerability_report_process` | MUST | Met | [SECURITY.md](../SECURITY.md) publishes the vulnerability reporting process. |
 | `vulnerability_report_private` | MUST | Met | [SECURITY.md](../SECURITY.md) directs reporters to GitHub private vulnerability reporting; the repository setting was verified enabled through the authenticated GitHub API on 2026-08-03. |
-| `vulnerability_report_response` | MUST | Owner confirm → N/A | Select N/A only if the owner confirms that no vulnerability report was received in the last six months. Otherwise record the actual initial response time and require it to be at most 14 days. |
+| `vulnerability_report_response` | MUST | N/A | On 2026-08-03, the owner confirmed that the project received no vulnerability report in the previous six months. |
 
 ### Quality
 
@@ -80,7 +81,7 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 | `test_most` | SUGGESTED | Unmet | The repository does not publish branch-coverage evidence and does not claim that most branches are covered. |
 | `test_continuous_integration` | SUGGESTED | Met | Validation runs on every pull request and every push to `main`. |
 | `test_policy` | MUST | Met | [CONTRIBUTING.md](../CONTRIBUTING.md) requires major new functionality to add or update automated tests. |
-| `tests_are_added` | MUST | Met | Recent major release-attestation functionality added dedicated validation tests in [PR #30](https://github.com/rare/slidesfly-integrations/pull/30); the CodeQL remediation also adds regression tests before merge. |
+| `tests_are_added` | MUST | Met | Release-attestation functionality added dedicated validation tests in [PR #30](https://github.com/rare/slidesfly-integrations/pull/30), and the merged CodeQL remediation added message-action regressions in [PR #31](https://github.com/rare/slidesfly-integrations/pull/31). |
 | `tests_documented_added` | SUGGESTED | Met | The test-addition policy is documented in [CONTRIBUTING.md](../CONTRIBUTING.md). |
 | `warnings` | MUST | N/A | Project source is interpreted JavaScript, HTML, and shell; there is no applicable project compiler warning flag. Builds and validators still fail on reported errors. |
 | `warnings_fixed` | MUST | N/A | No applicable compiler-warning stream exists for the project source. CI failures and security findings are handled by their dedicated criteria. |
@@ -90,8 +91,8 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 
 | Criterion | Level | Draft | Evidence or justification |
 |---|---|---|---|
-| `know_secure_design` | MUST | Owner confirm → Met | A primary developer must personally attest to the secure-design knowledge listed by the criterion; repository automation cannot make this claim. |
-| `know_common_errors` | MUST | Owner confirm → Met | A primary developer must personally attest to knowledge of relevant CWE/OWASP error classes and mitigations. |
+| `know_secure_design` | MUST | Met | On 2026-08-03, a primary developer personally attested to the secure-design knowledge listed by the criterion. |
+| `know_common_errors` | MUST | Met | On 2026-08-03, a primary developer personally attested to knowledge of relevant CWE/OWASP error classes and mitigations. |
 | `crypto_published` | MUST | Met | Release verification uses publicly specified SHA-256 and SHA-512 through Node's standard cryptographic library. |
 | `crypto_call` | SHOULD | Met | The project calls Node's standard cryptographic implementation and does not implement cryptographic primitives. |
 | `crypto_floss` | MUST | Met | The cryptographic checksum functionality is implementable with FLOSS Node/OpenSSL tooling. |
@@ -102,9 +103,9 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 | `crypto_password_storage` | MUST | N/A | The public integrations do not store passwords or authenticate external users with passwords. |
 | `crypto_random` | MUST | N/A | The project does not generate cryptographic keys or nonces. |
 | `delivery_mitm` | MUST | Met | Source, npm metadata, release assets, and service requests are delivered over HTTPS; release hashes are independently recomputed. |
-| `delivery_unsigned` | MUST | Met | Checksums are retrieved over HTTPS, never over plain HTTP; the [attestation workflow](release-attestations.md) is an additional future control. |
-| `vulnerabilities_fixed_60_days` | MUST | Met | Authenticated checks on 2026-08-03 found no Dependabot alert or repository security advisory, and no medium-or-higher publicly known vulnerability older than 60 days. Recheck before submission. |
-| `vulnerabilities_critical_fixed` | SHOULD | Met | No known critical vulnerability is open. Recheck before submission. |
+| `delivery_unsigned` | MUST | Met | Checksums are retrieved over HTTPS, never over plain HTTP. The [v0.3.1 release assets](https://github.com/rare/slidesfly-integrations/releases/tag/v0.3.1) also include a Sigstore bundle produced and verified by the [attestation workflow](release-attestations.md). |
+| `vulnerabilities_fixed_60_days` | MUST | Met | Authenticated checks on 2026-08-03 found no open Dependabot alert, repository security advisory, secret-scanning alert, or CodeQL product finding. The remaining Scorecard alerts are posture checks, not confirmed product vulnerabilities. |
+| `vulnerabilities_critical_fixed` | SHOULD | Met | Authenticated checks on 2026-08-03 found no known open critical vulnerability. |
 | `no_leaked_credentials` | MUST | Met | Secret scanning and push protection are enabled; the authenticated alert query returned no leaked credential alert on 2026-08-03. |
 
 ### Analysis
@@ -113,7 +114,7 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 |---|---|---|---|
 | `static_analysis` | MUST | Met | [CodeQL](../.github/workflows/codeql.yml) analyzes JavaScript/TypeScript on pull requests, `main`, and a schedule. |
 | `static_analysis_common_vulnerabilities` | SUGGESTED | Met | CodeQL includes security queries for common JavaScript/TypeScript vulnerability classes. |
-| `static_analysis_fixed` | MUST | Merge fix → Met | CodeQL alerts 7 and 8 found prototype-visible dynamic calls. Commit `2a1c80a` replaces them with explicit allowlists and adds unit/browser regressions. Keep this unmet until the fix is merged and a `main` CodeQL run closes both alerts. |
+| `static_analysis_fixed` | MUST | Met | CodeQL alerts [7](https://github.com/rare/slidesfly-integrations/security/code-scanning/7) and [8](https://github.com/rare/slidesfly-integrations/security/code-scanning/8) found prototype-visible dynamic calls. [PR #31](https://github.com/rare/slidesfly-integrations/pull/31) replaced them with explicit allowlists and added unit/browser regressions; both alerts were marked fixed after the successful `main` CodeQL run on 2026-08-03. |
 | `static_analysis_often` | SUGGESTED | Met | CodeQL runs on pull requests and every push to `main`, plus weekly. |
 | `dynamic_analysis` | SUGGESTED | Unmet | The project does not claim fuzzing, a dynamic security scanner, or at least 80% branch coverage. |
 | `dynamic_analysis_unsafe` | SUGGESTED | N/A | Project source is not written in a memory-unsafe language such as C or C++. |
@@ -122,12 +123,12 @@ requires a human attestation. `Merge fix` must not be changed to `Met` until the
 
 ## Submission gates
 
-1. Open and merge the CodeQL remediation pull request, then verify alerts 7 and 8 are closed by a
-   successful `main` CodeQL run.
-2. Obtain owner confirmation for `know_secure_design`, `know_common_errors`, and the absence or
-   response time of vulnerability reports in the previous six months.
-3. Re-run the live checks for issues, advisories, Dependabot, secret scanning, rulesets, releases,
-   and CodeQL immediately before submission.
+1. Completed 2026-08-03: merged the CodeQL remediation and verified that alerts 7 and 8 are fixed
+   after a successful `main` CodeQL run.
+2. Completed 2026-08-03: recorded the owner confirmations for `know_secure_design`,
+   `know_common_errors`, and no vulnerability reports in the previous six months.
+3. Completed 2026-08-03 and repeat at submission: checked issues, advisories, Dependabot, secret
+   scanning, private vulnerability reporting, rulesets, releases, attestations, and CodeQL.
 4. With explicit approval, sign in to `bestpractices.dev`, create the project for the public
    repository, review imported metadata, and submit the 67 answers.
 5. Add an OpenSSF badge to the repository or Slidesfly website only after the official project page
