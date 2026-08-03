@@ -31,7 +31,8 @@ jobs:
         run: |
           manifest_repository=$(node -p "require('./releases/npm-packages.json').github_repository")
           test "$manifest_repository" = "$GITHUB_REPOSITORY"
-          echo "tag=$(node -p \"require('./releases/npm-packages.json').release_tag\")" >> "$GITHUB_OUTPUT"
+          release_tag=$(node -p "require('./releases/npm-packages.json').release_tag")
+          printf 'tag=%s\n' "$release_tag" >> "$GITHUB_OUTPUT"
       - name: Verify canonical npm artifacts
         run: node scripts/verify-npm-release.mjs
       - name: Download immutable release assets
