@@ -14,7 +14,7 @@ jobs:
         with:
           persist-credentials: false
       - id: deck
-        uses: rare/slidesfly-integrations/actions/publish@2f4a9d00bb9e9347623fbd8600eaa967b250ea33 # v0.1.1
+        uses: rare/slidesfly-integrations/actions/publish@af1afebb564fd2131cc8309b30c45c57784e6a0d # v0.3.0
         with:
           file: path/to/deck.html
           api-key: ${{ secrets.SLIDESFLY_API_KEY }}
