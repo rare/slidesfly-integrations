@@ -1,0 +1,64 @@
+---
+title: "Quarto → Slidesfly"
+subtitle: "Render one portable HTML deck, then publish one shareable URL"
+author: "Slidesfly"
+output-file: index.html
+include-in-header: favicon.html
+format:
+  revealjs:
+    embed-resources: true
+    theme: black
+    css: slidesfly.css
+    html-math-method: plain
+    slide-number: true
+    transition: fade
+    controls: true
+    progress: true
+    hash: false
+    width: 1280
+    height: 720
+---
+
+## Build one portable artifact
+
+```bash
+quarto render slides.qmd --output-dir build
+node ../inject-slidesfly-reader-bridge.mjs build/index.html quarto
+```
+
+`embed-resources: true` packages the Reveal.js runtime and local presentation resources into
+`build/index.html`. The injector installs an early in-memory storage fallback for Slidesfly's
+opaque-origin sandbox and adds the standard reader navigation bridge.
+
+## Validate before publishing
+
+```bash
+node validate.mjs build/index.html
+```
+
+- Confirm every slide renders.
+- Test Left/Right keyboard navigation.
+- Check the browser console and network panel.
+- Keep credentials, claim tokens, and private content out of the deck.
+
+## Publish the generated HTML
+
+```bash
+node ../../skills/slidesfly/scripts/slidesfly.mjs publish \
+  ./build/index.html \
+  --title "Quarto publishing example" \
+  --visibility public \
+  --json
+```
+
+The verified Quarto `1.10.18` artifact is about 3.3 MiB, so this example uses an authenticated Free
+or higher publishing path rather than the current 1 MiB anonymous path.
+
+## Verify the reader, not just the build
+
+1. Open the returned `slidesfly.xyz` reader URL.
+2. Navigate across all five slides inside the sandboxed reader.
+3. Record the exact Quarto version, artifact checksum, and verification date.
+4. Treat build, browser, and live-reader checks as separate evidence.
+
+<p class="muted">Source first. Reproducible build. Verifiable reader.</p>

@@ -3,11 +3,11 @@ import { readFile, writeFile } from 'node:fs/promises';
 const [outputPath, framework = 'marp'] = process.argv.slice(2);
 if (!outputPath) {
   throw new Error(
-    'Usage: node inject-slidesfly-reader-bridge.mjs <built-index.html> [marp|slidev]',
+    'Usage: node inject-slidesfly-reader-bridge.mjs <built-index.html> [marp|quarto|slidev]',
   );
 }
-if (framework !== 'marp' && framework !== 'slidev') {
-  throw new Error('Reader bridge framework must be marp or slidev');
+if (!['marp', 'quarto', 'slidev'].includes(framework)) {
+  throw new Error('Reader bridge framework must be marp, quarto, or slidev');
 }
 
 const marker = 'data-slidesfly-reader-bridge';
@@ -108,20 +108,22 @@ const storageShim = `<script ${storageMarker}>
 
 const html = await readFile(outputPath, 'utf8');
 let nextHtml = html;
-if (framework === 'slidev' && !nextHtml.includes(storageMarker)) {
+if ((framework === 'quarto' || framework === 'slidev') && !nextHtml.includes(storageMarker)) {
   if (!/<head(?:\s[^>]*)?>/i.test(nextHtml)) {
-    throw new Error(`Cannot inject Slidev storage shim: ${outputPath} has no <head>`);
+    throw new Error(`Cannot inject ${framework} storage shim: ${outputPath} has no <head>`);
   }
-  // Slidev initializes storage-backed navigation state from its first module.
-  // Install the fallback before any module script executes in the opaque-origin
-  // reader sandbox. Real browser storage remains untouched when it is available.
+  // Slidev and Quarto/Reveal.js initialize storage-backed navigation state early.
+  // Install the fallback before any framework script executes in the opaque-origin
+  // reader sandbox. Real browser storage remains untouched when available.
   nextHtml = nextHtml.replace(/<head(?:\s[^>]*)?>/i, (head) => `${head}\n${storageShim}`);
 }
-if (!nextHtml.includes(marker) && !/<\/body>/i.test(nextHtml)) {
+const closingBodies = [...nextHtml.matchAll(/<\/body>/gi)];
+if (!nextHtml.includes(marker) && closingBodies.length === 0) {
   throw new Error(`Cannot inject Slidesfly reader bridge: ${outputPath} has no </body>`);
 }
 if (!nextHtml.includes(marker)) {
-  nextHtml = nextHtml.replace(/<\/body>/i, `${bridge}\n</body>`);
+  const closingBodyIndex = closingBodies.at(-1).index;
+  nextHtml = `${nextHtml.slice(0, closingBodyIndex)}${bridge}\n${nextHtml.slice(closingBodyIndex)}`;
 }
 
 if (nextHtml !== html) {

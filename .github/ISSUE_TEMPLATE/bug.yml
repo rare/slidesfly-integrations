@@ -14,6 +14,7 @@ body:
         - Reveal.js example
         - Slidev example
         - Marp example
+        - Quarto example
         - MCP metadata
         - Other
     validations:

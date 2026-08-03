@@ -9,7 +9,10 @@ import vm from 'node:vm';
 const script = new URL('./inject-slidesfly-reader-bridge.mjs', import.meta.url);
 const fixture = `<!doctype html>
 <html>
-  <head><script type="module" src="./app.js"></script></head>
+  <head>
+    <script type="module" src="./app.js"></script>
+    <script>window.templateClosingBody = '</body>';</script>
+  </head>
   <body><div id="app"></div></body>
 </html>`;
 
@@ -35,6 +38,26 @@ test('injects the Slidev storage fallback before module scripts and the navigati
     assert.ok(shimIndex > -1);
     assert.ok(moduleIndex > shimIndex);
     assert.ok(bridgeIndex > moduleIndex);
+    assert.match(html, /installFallback\('localStorage'\)/);
+    assert.match(html, /installFallback\('sessionStorage'\)/);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test('injects the Quarto storage fallback before framework scripts and the navigation bridge', async () => {
+  const { directory, output, result } = await runInjector('quarto');
+  try {
+    assert.equal(result.status, 0, result.stderr);
+    const html = await readFile(output, 'utf8');
+    const shimIndex = html.indexOf('data-slidesfly-storage-shim');
+    const shimEndIndex = html.indexOf('</script>', shimIndex);
+    const scriptIndex = html.indexOf('<script', shimEndIndex + '</script>'.length);
+    const bridgeIndex = html.indexOf('data-slidesfly-reader-bridge');
+
+    assert.ok(shimIndex > -1);
+    assert.ok(scriptIndex > shimIndex);
+    assert.ok(bridgeIndex > scriptIndex);
     assert.match(html, /installFallback\('localStorage'\)/);
     assert.match(html, /installFallback\('sessionStorage'\)/);
   } finally {
@@ -86,6 +109,21 @@ test('is idempotent for an already patched Slidev build', async () => {
   }
 });
 
+test('is idempotent for an already patched Quarto build', async () => {
+  const { directory, output, result } = await runInjector('quarto');
+  try {
+    assert.equal(result.status, 0, result.stderr);
+    const first = await readFile(output, 'utf8');
+    const secondResult = spawnSync(process.execPath, [script.pathname, output, 'quarto'], {
+      encoding: 'utf8',
+    });
+    assert.equal(secondResult.status, 0, secondResult.stderr);
+    assert.equal(await readFile(output, 'utf8'), first);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
 test('does not add the storage fallback to Marp output', async () => {
   const { directory, output, result } = await runInjector('marp');
   try {
@@ -93,6 +131,23 @@ test('does not add the storage fallback to Marp output', async () => {
     const html = await readFile(output, 'utf8');
     assert.doesNotMatch(html, /data-slidesfly-storage-shim/);
     assert.match(html, /data-slidesfly-reader-bridge/);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test('injects the bridge before the final closing body, not a script string', async () => {
+  const { directory, output, result } = await runInjector('quarto');
+  try {
+    assert.equal(result.status, 0, result.stderr);
+    const html = await readFile(output, 'utf8');
+    const scriptSentinelIndex = html.indexOf("window.templateClosingBody = '</body>'");
+    const bridgeIndex = html.indexOf('data-slidesfly-reader-bridge');
+    const finalClosingBodyIndex = html.lastIndexOf('</body>');
+
+    assert.ok(scriptSentinelIndex > -1);
+    assert.ok(bridgeIndex > scriptSentinelIndex);
+    assert.ok(finalClosingBodyIndex > bridgeIndex);
   } finally {
     await rm(directory, { recursive: true });
   }
