@@ -9,7 +9,7 @@ const assessment = readFileSync(
   'utf8',
 );
 
-test('accepts the complete submission draft', () => {
+test('accepts the complete submitted assessment', () => {
   assert.deepEqual(validateAssessment(assessment), { criterionCount: 67 });
 });
 
@@ -30,10 +30,13 @@ test('rejects duplicate criterion identifiers', () => {
   );
 });
 
-test('rejects a missing pre-award claim boundary', () => {
-  const withoutBoundary = assessment.replace('does not\nclaim that', 'claims that');
+test('rejects missing official passing-status evidence', () => {
+  const withoutBoundary = assessment.replace(
+    '[official OpenSSF project page](https://www.bestpractices.dev/projects/13940)',
+    'OpenSSF project page',
+  );
   assert.throws(
     () => validateAssessment(withoutBoundary),
-    /The assessment must preserve the pre-award claim boundary/,
+    /The assessment must preserve the official passing-status evidence/,
   );
 });

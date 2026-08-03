@@ -1,8 +1,10 @@
-# OpenSSF Best Practices passing assessment submission draft
+# OpenSSF Best Practices passing assessment
 
-This document is a pre-application draft for the OpenSSF Best Practices passing level. It does not
-claim that `rare/slidesfly-integrations`, Slidesfly, or the private Slidesfly SaaS has earned a badge.
-Only the project page on `bestpractices.dev` can establish badge status.
+This document records the answers submitted for the OpenSSF Best Practices passing level. The
+[official OpenSSF project page](https://www.bestpractices.dev/projects/13940) reports the passing
+level at 100%, first achieved on 2026-08-03 at 03:19:56 UTC. That official page is the source of
+truth for current badge status. The badge covers only `rare/slidesfly-integrations`; it does not
+cover or certify the private Slidesfly SaaS.
 
 ## Assessment boundary and snapshot
 
@@ -17,12 +19,12 @@ Only the project page on `bestpractices.dev` can establish badge status.
   including the merged CodeQL remediation, passing `main` CodeQL analysis, and the verified v0.3.1
   Sigstore release-attestation workflow.
 
-`Met`, `N/A`, and `Unmet` below are proposed form answers, not accepted answers. The owner
-attestations required by `vulnerability_report_response`, `know_secure_design`, and
-`know_common_errors` were recorded on 2026-08-03. Repository-backed answers were rechecked against
-the live GitHub control plane on the same date.
+`Met`, `N/A`, and `Unmet` below are the submitted form answers. The owner attestations required by
+`vulnerability_report_response`, `know_secure_design`, and `know_common_errors` were recorded on
+2026-08-03. Repository-backed answers were rechecked against the live GitHub control plane on the
+same date.
 
-## Form-answer draft
+## Submitted form answers
 
 ### Basics
 
@@ -121,15 +123,15 @@ the live GitHub control plane on the same date.
 | `dynamic_analysis_enable_assertions` | SUGGESTED | Met | Node test suites execute with `node:assert/strict` assertions enabled. |
 | `dynamic_analysis_fixed` | MUST | N/A | No qualifying dynamic-analysis program is currently run, so it has produced no confirmed exploitable vulnerability. |
 
-## Submission gates
+## Submission outcome
 
-1. Completed 2026-08-03: merged the CodeQL remediation and verified that alerts 7 and 8 are fixed
+1. Completed 2026-08-03: merged the CodeQL remediation and verified that alerts 7 and 8 were fixed
    after a successful `main` CodeQL run.
 2. Completed 2026-08-03: recorded the owner confirmations for `know_secure_design`,
    `know_common_errors`, and no vulnerability reports in the previous six months.
-3. Completed 2026-08-03 and repeat at submission: checked issues, advisories, Dependabot, secret
-   scanning, private vulnerability reporting, rulesets, releases, attestations, and CodeQL.
-4. With explicit approval, sign in to `bestpractices.dev`, create the project for the public
-   repository, review imported metadata, and submit the 67 answers.
-5. Add an OpenSSF badge to the repository or Slidesfly website only after the official project page
-   reports that the passing level is earned.
+3. Completed 2026-08-03: checked issues, advisories, Dependabot, secret scanning, private
+   vulnerability reporting, rulesets, releases, attestations, and CodeQL.
+4. Completed 2026-08-03 with explicit approval: created project `13940`, reviewed imported
+   metadata, and submitted all 67 answers with no status mismatch against this assessment.
+5. The official project page reported 100% and awarded the passing badge on 2026-08-03 at
+   03:19:56 UTC. The README badge links directly to that source of truth.
