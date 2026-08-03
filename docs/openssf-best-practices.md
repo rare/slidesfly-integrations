@@ -34,6 +34,9 @@ an automated repository signal, not a certification or endorsement.
 
 ## Known gates before an application can be marked passing
 
+The criterion-by-criterion proposed answers and evidence are maintained in the
+[passing assessment draft](openssf-passing-assessment.md).
+
 1. Create or sign in to the official OpenSSF Best Practices account with explicit owner approval.
 2. Let the official service import and validate repository metadata.
 3. Answer every MUST, SHOULD, and SUGGESTED criterion with criterion-specific evidence or a truthful
