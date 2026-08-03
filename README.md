@@ -123,8 +123,8 @@ check the release assets and verify the bundle before relying on it.
 
 See [MAINTENANCE.md](MAINTENANCE.md), [CONTRIBUTING.md](CONTRIBUTING.md), and
 [SECURITY.md](SECURITY.md) before relying on a public-beta integration in production. The
-[OpenSSF Best Practices readiness notes](docs/openssf-best-practices.md) map current public evidence
-and remaining self-assessment gates without claiming a badge.
+[OpenSSF Best Practices passing status and evidence](docs/openssf-best-practices.md) records the
+current public evidence, assessment scope, and ongoing maintenance boundaries.
 
 ## License
 
