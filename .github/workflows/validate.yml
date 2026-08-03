@@ -61,7 +61,10 @@ jobs:
         working-directory: examples/revealjs
         run: npm ci && npm audit --audit-level=moderate && npm run build
       - name: Test reader compatibility injector
-        run: node --test examples/inject-slidesfly-reader-bridge.test.mjs
+        run: >-
+          node --test
+          examples/inject-slidesfly-reader-bridge.test.mjs
+          examples/message-actions.test.mjs
       - name: Build Slidev example
         working-directory: examples/slidev
         run: npm ci && npm audit --audit-level=moderate && npm run build

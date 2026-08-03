@@ -29,15 +29,25 @@
       import Reveal from './dist/reveal.mjs';
       const deck = new Reveal();
       await deck.initialize({ hash: true, progress: true });
+      function handleSlidesflyAction(action) {
+        switch (action) {
+          case 'next':
+            deck.next();
+            break;
+          case 'prev':
+            deck.prev();
+            break;
+          case 'first':
+            deck.slide(0);
+            break;
+          case 'last':
+            deck.slide(deck.getTotalSlides() - 1);
+            break;
+        }
+      }
       window.addEventListener('message', (event) => {
         if (event.data?.source !== 'slidesfly') return;
-        const actions = {
-          next: () => deck.next(),
-          prev: () => deck.prev(),
-          first: () => deck.slide(0),
-          last: () => deck.slide(deck.getTotalSlides() - 1),
-        };
-        actions[event.data.action]?.();
+        handleSlidesflyAction(event.data.action);
       });
     </script>
   </body>
