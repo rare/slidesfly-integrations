@@ -21,10 +21,11 @@ jobs:
           node-version: '22'
       - name: Verify workflow action pins
         run: node scripts/validate-workflow-pins.mjs
-      - name: Validate OpenSSF readiness claim boundaries
+      - name: Validate OpenSSF passing-status boundaries
         run: |
           test -f docs/openssf-best-practices.md
-          grep -q 'No OpenSSF Best Practices badge has been earned yet' docs/openssf-best-practices.md
+          grep -q 'https://www.bestpractices.dev/projects/13940' docs/openssf-best-practices.md
+          grep -q 'reports the' docs/openssf-best-practices.md
           grep -q 'Major new functionality must include or update automated tests' CONTRIBUTING.md
           node scripts/validate-openssf-assessment.mjs
           node --test scripts/validate-openssf-assessment.test.mjs

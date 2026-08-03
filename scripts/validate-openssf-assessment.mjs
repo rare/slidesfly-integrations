@@ -29,8 +29,13 @@ export function validateAssessment(source) {
     }
   }
 
-  if (!/does not\s+claim that `rare\/slidesfly-integrations`/.test(source)) {
-    throw new Error('The assessment must preserve the pre-award claim boundary');
+  if (
+    !source.includes(
+      '[official OpenSSF project page](https://www.bestpractices.dev/projects/13940)',
+    ) ||
+    !source.includes('reports the passing')
+  ) {
+    throw new Error('The assessment must preserve the official passing-status evidence');
   }
 
   return { criterionCount: criterionRows.length };
