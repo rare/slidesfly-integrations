@@ -16,6 +16,7 @@ might generate.
 | Pinned revision | [`9906a34d640d2111f724544cbc50f7f130569ae1`](https://github.com/zarazhangrui/frontend-slides/tree/9906a34d640d2111f724544cbc50f7f130569ae1) |
 | Source license at review time | MIT |
 | Reviewed on | 2026-08-01 |
+| Last reverified | 2026-08-06; upstream `main` still matched the pinned revision |
 | Mode | New presentation |
 | Purpose | Technical compatibility walkthrough |
 | Length | 5 slides |
@@ -69,6 +70,10 @@ and live-reader checked on 2026-08-01. Version 1 at
 reader rendered all five slides at 1440×900, preserved a 16:9 stage at 390×844, and advanced from
 slide 1 to slide 2 with the reader keyboard path. The live proof keeps the same deck ID for later
 controlled updates.
+
+On 2026-08-06, the source validator passed again, the reader and versioned artifact both returned
+HTTP 200, and the versioned artifact still matched the committed SHA-256 shown above. A fresh
+1440×900 headless-browser render displayed slide 1 rather than a blank or error state.
 
 The fixture itself produced no browser console errors locally. In the live opaque-origin reader,
 Cloudflare's injected `/cdn-cgi/rum` request produced two CORS errors; the deck content and
