@@ -63,6 +63,9 @@ jobs:
       - name: Build Reveal.js example
         working-directory: examples/revealjs
         run: npm ci && npm audit --audit-level=moderate && npm run build
+      - name: Build open-slide example
+        working-directory: examples/open-slide
+        run: npm ci && npm run audit:known && npm run build
       - name: Test reader compatibility injector
         run: >-
           node --test

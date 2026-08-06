@@ -1,0 +1,24 @@
+{
+  "name": "slidesfly-open-slide-example",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "scripts": {
+    "audit:known": "node validate-audit.mjs",
+    "build": "open-slide build --out-dir dist && node ../inject-slidesfly-reader-bridge.mjs dist/index.html open-slide && node validate.mjs dist",
+    "validate": "node validate.mjs dist"
+  },
+  "dependencies": {
+    "@open-slide/core": "1.17.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.31",
+    "@types/react-dom": "18.3.7",
+    "vite": "5.4.21"
+  }
+}

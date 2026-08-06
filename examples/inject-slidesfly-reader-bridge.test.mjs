@@ -20,6 +20,7 @@ async function runInjector(framework) {
   const directory = await mkdtemp(join(tmpdir(), 'slidesfly-bridge-'));
   const output = join(directory, 'index.html');
   await writeFile(output, fixture);
+  await writeFile(join(directory, 'app.js'), 'const router = { basename:"./" };\n');
   const result = spawnSync(process.execPath, [script.pathname, output, framework], {
     encoding: 'utf8',
   });
@@ -60,6 +61,63 @@ test('injects the Quarto storage fallback before framework scripts and the navig
     assert.ok(bridgeIndex > scriptIndex);
     assert.match(html, /installFallback\('localStorage'\)/);
     assert.match(html, /installFallback\('sessionStorage'\)/);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test('injects the open-slide storage fallback and dispatches navigation on window', async () => {
+  const { directory, output, result } = await runInjector('open-slide');
+  try {
+    assert.equal(result.status, 0, result.stderr);
+    const html = await readFile(output, 'utf8');
+    const moduleSource = await readFile(join(directory, 'app.js'), 'utf8');
+    const nestedBaseIndex = html.indexOf('data-open-slide-nested-base');
+    const shimIndex = html.indexOf('data-slidesfly-storage-shim');
+    const moduleIndex = html.indexOf('type="module"');
+    const bridgeIndex = html.indexOf('data-slidesfly-reader-bridge');
+
+    assert.ok(nestedBaseIndex > -1);
+    assert.ok(shimIndex > -1);
+    assert.ok(nestedBaseIndex < moduleIndex);
+    assert.ok(moduleIndex > shimIndex);
+    assert.ok(bridgeIndex > moduleIndex);
+    assert.match(moduleSource, /basename:window\.__OPEN_SLIDE_BASE__/);
+    assert.doesNotMatch(moduleSource, /basename:"\.\/"/);
+    assert.match(html, /document\.createElement\('base'\)/);
+    assert.match(html, /window\.dispatchEvent\(new KeyboardEvent\('keydown'/);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test('is idempotent for an already patched open-slide build', async () => {
+  const { directory, output, result } = await runInjector('open-slide');
+  try {
+    assert.equal(result.status, 0, result.stderr);
+    const firstHtml = await readFile(output, 'utf8');
+    const firstModule = await readFile(join(directory, 'app.js'), 'utf8');
+    const secondResult = spawnSync(process.execPath, [script.pathname, output, 'open-slide'], {
+      encoding: 'utf8',
+    });
+    assert.equal(secondResult.status, 0, secondResult.stderr);
+    assert.equal(await readFile(output, 'utf8'), firstHtml);
+    assert.equal(await readFile(join(directory, 'app.js'), 'utf8'), firstModule);
+  } finally {
+    await rm(directory, { recursive: true });
+  }
+});
+
+test('rejects an open-slide module path outside the build directory', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'slidesfly-bridge-'));
+  const output = join(directory, 'index.html');
+  try {
+    await writeFile(output, fixture.replace('./app.js', './../outside.js'));
+    const result = spawnSync(process.execPath, [script.pathname, output, 'open-slide'], {
+      encoding: 'utf8',
+    });
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr, /module path leaves the build directory/);
   } finally {
     await rm(directory, { recursive: true });
   }

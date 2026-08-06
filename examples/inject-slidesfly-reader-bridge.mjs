@@ -1,17 +1,19 @@
 import { readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve, sep } from 'node:path';
 
 const [outputPath, framework = 'marp'] = process.argv.slice(2);
 if (!outputPath) {
   throw new Error(
-    'Usage: node inject-slidesfly-reader-bridge.mjs <built-index.html> [marp|quarto|slidev]',
+    'Usage: node inject-slidesfly-reader-bridge.mjs <built-index.html> [marp|open-slide|quarto|slidev]',
   );
 }
-if (!['marp', 'quarto', 'slidev'].includes(framework)) {
-  throw new Error('Reader bridge framework must be marp, quarto, or slidev');
+if (!['marp', 'open-slide', 'quarto', 'slidev'].includes(framework)) {
+  throw new Error('Reader bridge framework must be marp, open-slide, quarto, or slidev');
 }
 
 const marker = 'data-slidesfly-reader-bridge';
 const storageMarker = 'data-slidesfly-storage-shim';
+const nestedBaseMarker = 'data-open-slide-nested-base';
 const navigation =
   framework === 'slidev'
     ? `var currentMatch = location.hash.match(/^#\\/(\\d+)/);
@@ -36,7 +38,7 @@ const navigation =
     };
     var key = keyByAction[data.action];
     if (!key) return;
-    document.dispatchEvent(new KeyboardEvent('keydown', {
+    ${(framework === 'open-slide' ? 'window' : 'document')}.dispatchEvent(new KeyboardEvent('keydown', {
       key: key,
       bubbles: false,
       cancelable: true
@@ -105,10 +107,59 @@ const storageShim = `<script ${storageMarker}>
   installFallback('sessionStorage');
 })();
 </script>`;
+const nestedBaseShim = `<script ${nestedBaseMarker}>
+(function () {
+  var pathname = window.location.pathname;
+  var slash = pathname.lastIndexOf('/');
+  var base = pathname.slice(0, slash + 1) || '/';
+  window.__OPEN_SLIDE_BASE__ = base;
+  var baseElement = document.createElement('base');
+  baseElement.href = base;
+  document.head.prepend(baseElement);
+  if (pathname !== base) {
+    window.history.replaceState(null, '', base + window.location.search + window.location.hash);
+  }
+})();
+</script>`;
 
 const html = await readFile(outputPath, 'utf8');
 let nextHtml = html;
-if ((framework === 'quarto' || framework === 'slidev') && !nextHtml.includes(storageMarker)) {
+if (framework === 'open-slide' && !nextHtml.includes(nestedBaseMarker)) {
+  const moduleSource = nextHtml.match(
+    /<script[^>]+type=["']module["'][^>]+src=["']([^"']+)["']/i,
+  )?.[1];
+  if (!moduleSource) {
+    throw new Error(`Cannot patch open-slide nested base: ${outputPath} has no module script`);
+  }
+  if (!moduleSource.startsWith('./')) {
+    throw new Error(`Cannot patch open-slide nested base: module path must be relative`);
+  }
+  const outputDirectory = resolve(dirname(outputPath));
+  const modulePath = resolve(outputDirectory, moduleSource);
+  if (!modulePath.startsWith(`${outputDirectory}${sep}`)) {
+    throw new Error(`Cannot patch open-slide nested base: module path leaves the build directory`);
+  }
+  const moduleSourceText = await readFile(modulePath, 'utf8');
+  const basenameNeedle = 'basename:"./"';
+  const matches = moduleSourceText.split(basenameNeedle).length - 1;
+  if (matches !== 1) {
+    throw new Error(
+      `Cannot patch open-slide nested base: expected one ${basenameNeedle} in ${modulePath}, found ${matches}`,
+    );
+  }
+  await writeFile(
+    modulePath,
+    moduleSourceText.replace(basenameNeedle, 'basename:window.__OPEN_SLIDE_BASE__'),
+  );
+  if (!/<head(?:\s[^>]*)?>/i.test(nextHtml)) {
+    throw new Error(`Cannot inject open-slide nested base: ${outputPath} has no <head>`);
+  }
+  nextHtml = nextHtml.replace(/<head(?:\s[^>]*)?>/i, (head) => `${head}\n${nestedBaseShim}`);
+}
+if (
+  (framework === 'open-slide' || framework === 'quarto' || framework === 'slidev') &&
+  !nextHtml.includes(storageMarker)
+) {
   if (!/<head(?:\s[^>]*)?>/i.test(nextHtml)) {
     throw new Error(`Cannot inject ${framework} storage shim: ${outputPath} has no <head>`);
   }
