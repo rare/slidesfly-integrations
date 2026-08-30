@@ -14,7 +14,7 @@ const manifest = JSON.parse(manifestText);
 
 assert.deepEqual(manifest, {
   name: 'slidesfly',
-  version: '0.3.0',
+  version: '0.3.1',
   description: 'Publish and manage existing HTML presentation files with Slidesfly.',
   settings: [
     {
@@ -35,7 +35,7 @@ assert.deepEqual(manifest, {
 });
 
 assert.match(skill, /^name: slidesfly$/m);
-assert.match(skill, /^version: 0\.2\.0$/m);
+assert.match(skill, /^version: 0\.2\.1$/m);
 assert.match(runner, /^#!\/usr\/bin\/env node/);
 assert.match(runner, /\.name\("slidesfly"\)/);
 

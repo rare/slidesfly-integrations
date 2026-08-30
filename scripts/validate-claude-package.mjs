@@ -22,7 +22,7 @@ const manifest = JSON.parse(manifestText);
 const mcp = JSON.parse(mcpText);
 
 assert.equal(manifest.name, 'slidesfly');
-assert.equal(manifest.version, '0.2.0');
+assert.equal(manifest.version, '0.2.1');
 assert.equal(manifest.repository, 'https://github.com/rare/slidesfly-integrations');
 assert.equal(manifest.userConfig.api_key.type, 'string');
 assert.equal(manifest.userConfig.api_key.required, true);
@@ -43,7 +43,9 @@ assert.equal(
 );
 assert.match(pluginRunner, /^#!\/usr\/bin\/env node/);
 assert.match(pluginRunner, /\.name\("slidesfly"\)/);
-assert.match(readme, /has not yet been submitted to or accepted by/);
+assert.match(readme, /submitted on 2026-08-30 through Leibe's Individual Org/);
+assert.match(readme, /Review is\s+pending/);
+assert.match(readme, /has not been accepted or published by/);
 
 const packageContent = [manifestText, mcpText, pluginSkill, pluginRunner, readme].join('\n');
 assert.doesNotMatch(

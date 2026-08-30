@@ -32,7 +32,7 @@ await access(new URL(`${marketplace.plugins[0].source}/.cursor-plugin/plugin.jso
 
 assert.equal(manifest.name, 'slidesfly');
 assert.equal(manifest.displayName, 'Slidesfly');
-assert.equal(manifest.version, '0.2.0');
+assert.equal(manifest.version, '0.2.1');
 assert.equal(manifest.repository, 'https://github.com/rare/slidesfly-integrations');
 assert.equal(manifest.license, 'MIT');
 assert.equal(manifest.skills, './skills/');

@@ -11,7 +11,7 @@ description: |
   new deck, use a slide-generation skill (e.g. anthropic/slides, codex/slides,
   marp, reveal.js) or write HTML inline FIRST, then invoke this skill to publish
   the resulting file.
-version: 0.2.0
+version: 0.2.1
 license: MIT
 ---
 
@@ -54,13 +54,13 @@ Examples that **should not** trigger:
 
 ```bash
 test -f "$SKILL_DIR/scripts/slidesfly.mjs"
-node "$SKILL_DIR/scripts/slidesfly.mjs" --version   # expect 0.1.3+
+node "$SKILL_DIR/scripts/slidesfly.mjs" --version   # expect 0.1.4+
 node "$SKILL_DIR/scripts/slidesfly.mjs" publish ./deck.html --title "My Deck" --json
 ```
 
 For a legacy Cursor `.mdc` installation, the installer stores the runner in the sibling
 `slidesfly/scripts/slidesfly.mjs` directory. Resolve that exact path before executing it. If the
-bundled runner is absent, a reviewed PATH `slidesfly` `>= 0.1.3` is a compatible fallback; do not
+bundled runner is absent, a reviewed PATH `slidesfly` `>= 0.1.4` is a compatible fallback; do not
 download and execute a replacement during the task.
 
 5. **Install this skill locally** (optional, for persistent agent guidance and the bundled runner):
@@ -123,7 +123,14 @@ Published decks render inside a sandboxed iframe with an **opaque origin** (`all
 
 - **JS, forms, and popups work.** Inline `<script>` runs normally; keyboard/slide navigation is fine.
 - **`localStorage`, `sessionStorage`, and IndexedDB THROW** (SecurityError) on access; cookies are inert — never rely on browser storage. If a library touches storage, wrap access in `try/catch` or feature-detect; do not persist viewer state.
-- **Publish-time scan rejects** single-file decks containing any `<script src=` (self-contained rule), multi-file decks loading **remote** scripts, and content referencing blocklisted domains — the API returns `MALICIOUS_CONTENT`. Behavior keywords (`eval(`, `document.cookie`, `javascript:`, `onerror=`, `onload=`) are accepted but logged as risk signals for async review; published decks are also re-scanned asynchronously (Cloudflare Security DNS by default; optional Google Safe Browsing) and taken down if flagged.
+- **CLI preflight runs before upload.** Runner/CLI 0.1.4 safely inlines eligible local classic
+  `.js` files into the upload copy while leaving the source deck unchanged. It blocks remote,
+  missing, oversized, module/async/defer/integrity-sensitive, `<base href>`-ambiguous, or otherwise
+  unsafe script references before any network request. The server still rejects disallowed script
+  sources and blocklisted domains with `MALICIOUS_CONTENT`. Behavior keywords (`eval(`,
+  `document.cookie`, `javascript:`, `onerror=`, `onload=`) are accepted but logged as risk signals
+  for async review; published decks are also re-scanned asynchronously (Cloudflare Security DNS by
+  default; optional Google Safe Browsing) and taken down if flagged.
 - **Self-contained is safest**: inline all CSS/JS/images (data URIs) in one file. Multi-file decks may reference their own relative assets only.
 
 ## Anonymous-first workflow (default)
@@ -339,7 +346,7 @@ Human TTY mode prints minimal text (usually the URL). Agents should always use `
 If the bundled runner is unavailable:
 
 1. Check for a preinstalled `slidesfly` binary on PATH (`~/.slidesfly/bin` after website install).
-2. Continue only if `slidesfly --version` is `0.1.3` or newer.
+2. Continue only if `slidesfly --version` is `0.1.4` or newer.
 3. Otherwise stop and direct the user to the official technical quickstart. Do not download or
    execute a remote installer, ad-hoc `cli.mjs`, or unverified npm package from this Skill.
 4. Do not hand-build a multipart publish request: use the bundled runner, a compatible PATH CLI, or
@@ -372,4 +379,4 @@ If loopback login is blocked, use `slidesfly login --code` (headless device flow
 - Default visibility is `unlisted` unless the user explicitly asks for `public`.
 - Share URLs live on `slidesfly.xyz`; SaaS dashboard lives on `slidesfly.com`.
 
-<!-- slidesfly-skill version: 0.2.0 -->
+<!-- slidesfly-skill version: 0.2.1 -->

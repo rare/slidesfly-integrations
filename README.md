@@ -21,7 +21,7 @@ developers can inspect, test, and reuse.
 | [`gemini-extension.json`](gemini-extension.json) | Installable | Gemini CLI extension with the Skill and hosted MCP |
 | [`actions/publish`](actions/publish) | Backwards-compatible | Existing subdirectory entry point for the publish Action |
 | [`skills/slidesfly`](skills/slidesfly) | Installable | Official Slidesfly Agent Skill |
-| [`claude/slidesfly`](claude/slidesfly) | Package-ready | Claude Code plugin with the Skill and hosted MCP |
+| [`claude/slidesfly`](claude/slidesfly) | Submitted; review pending | Claude Code plugin with the Skill and hosted MCP |
 | [`cursor/slidesfly`](cursor/slidesfly) | Submitted; review pending | Cursor plugin with the Skill and bundled CLI runner |
 | [`examples/plain-html`](examples/plain-html) | Live-verified fixture | One self-contained HTML deck |
 | [`examples/codex-generated`](examples/codex-generated) | Live-verified fixture | Agent-generated single-file deck |
@@ -57,7 +57,7 @@ npx skills add rare/slidesfly-integrations --skill slidesfly
 Install exact public npm versions with:
 
 ```bash
-npm install --global @slidesfly/cli@0.1.3
+npm install --global @slidesfly/cli@0.1.4
 slidesfly --version
 npx -y @slidesfly/mcp@0.1.0
 ```
@@ -70,12 +70,15 @@ them.
 Install the Gemini CLI extension from the public repository:
 
 ```bash
-gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.1
+gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.2
 ```
 
 Gemini CLI requests `SLIDESFLY_API_KEY` as a sensitive setting and stores it in the system
 keychain. Create a key in the Slidesfly dashboard when you are ready to use the hosted MCP; never
 commit the key to this repository.
+
+The Claude Code plugin was submitted on 2026-08-30 through Leibe's Individual Org. Review is
+pending; it has not been accepted or published in the Claude Code Plugins Directory.
 
 The Cursor package intentionally does not bundle the API-key-only hosted MCP. Cursor Marketplace
 plugins currently have no stable install-time secret-input flow for that configuration, while the
@@ -87,7 +90,7 @@ Publish a deck from GitHub Actions with:
 
 ```yaml
 - id: deck
-  uses: rare/slidesfly-integrations@v0.3.1
+  uses: rare/slidesfly-integrations@v0.3.2
   with:
     file: deck.html
     api-key: ${{ secrets.SLIDESFLY_API_KEY }}
@@ -100,7 +103,7 @@ using it.
 
 ## Current boundaries
 
-- The website installer and `@slidesfly/cli@0.1.3` are supported public CLI distributions.
+- The website installer and `@slidesfly/cli@0.1.4` are supported public CLI distributions.
 - The hosted MCP endpoint is `https://slidesfly.com/api/mcp` and requires a Slidesfly API key.
 - The stdio MCP package is `@slidesfly/mcp@0.1.0`; its local config remains separate from hosted
   MCP bearer authentication.

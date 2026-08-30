@@ -1,18 +1,18 @@
 {
   "schema_version": 1,
-  "verified_at": "2026-08-02",
+  "verified_at": "2026-08-31",
   "github_repository": "rare/slidesfly-integrations",
-  "release_tag": "v0.3.1",
+  "release_tag": "v0.3.2",
   "packages": [
     {
       "name": "@slidesfly/cli",
-      "version": "0.1.3",
-      "filename": "slidesfly-cli-0.1.3.tgz",
-      "tarball": "https://registry.npmjs.org/@slidesfly/cli/-/cli-0.1.3.tgz",
-      "shasum": "4e03489ea4ad1dfc3325cc63836cde2860e792d2",
-      "integrity": "sha512-2PZ9vTpIpD5EB3A1ALborsiKP6K2nBxGCOix4GtrDFbWUu8Rz6u8L0WxAGxnKonXl+QO1jD5HE8XE93AALyCtg==",
-      "sha256": "fe220c10218f250a94a16baed4c4fef1b2b56de4dc406c9df3ca586984b3a781",
-      "sha512": "d8f67dbd3a48a43e4407703500b6e8aec88a3fa2b69c1c4608e8b1e06b6b0c56d652ef11cfabbc2f45b1006c672a89d797e40ed630f91c4f1713ddc000bc82b6"
+      "version": "0.1.4",
+      "filename": "slidesfly-cli-0.1.4.tgz",
+      "tarball": "https://registry.npmjs.org/@slidesfly/cli/-/cli-0.1.4.tgz",
+      "shasum": "0b6896b33dbe51c30688073a4192356865d084ab",
+      "integrity": "sha512-Esbu/gVXMy5VVeNopk0n56AoU9YGnPGeijxv/Wl5R/MK38RoXV6S91ac7Z0ZlShZJ7GzOhDqXplhoY8agM9Blg==",
+      "sha256": "b5c64ba08c21a047a0c3f7b3a64bf26af4cb052c71530230ffb4a0f719d6d4df",
+      "sha512": "12c6eefe0557332e5555e368a64d27e7a02853d6069cf19e8a3c6ffd697947f30adfc4685d5e92f7569ced9d1995285927b1b33a10ea5e9961a18f1a80cf4196"
     },
     {
       "name": "@slidesfly/mcp",

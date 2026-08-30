@@ -3028,7 +3028,7 @@ var require_commander = __commonJS({
 
 // src/index.ts
 import { readFileSync } from "node:fs";
-import { dirname as dirname6, join as join6 } from "node:path";
+import { dirname as dirname7, join as join6 } from "node:path";
 import { fileURLToPath as fileURLToPath3 } from "node:url";
 
 // ../../node_modules/.pnpm/commander@12.1.0/node_modules/commander/esm.mjs
@@ -4142,8 +4142,8 @@ async function promptUserCode(options = {}) {
     output: process.stdout
   });
   try {
-    const raw = await new Promise((resolve2) => {
-      rl.question("Enter code: ", resolve2);
+    const raw = await new Promise((resolve3) => {
+      rl.question("Enter code: ", resolve3);
     });
     return normalizeUserCode(raw);
   } finally {
@@ -4181,7 +4181,7 @@ import { URL } from "node:url";
 var DEFAULT_TIMEOUT_MS = 5 * 60 * 1e3;
 async function beginLoopback(options) {
   const { expectedState, timeoutMs = DEFAULT_TIMEOUT_MS } = options;
-  return new Promise((resolve2, reject) => {
+  return new Promise((resolve3, reject) => {
     const server = createServer();
     server.on("error", reject);
     server.listen(0, "127.0.0.1", () => {
@@ -4192,7 +4192,7 @@ async function beginLoopback(options) {
         return;
       }
       const redirectUri = `http://127.0.0.1:${address.port}/callback`;
-      resolve2({
+      resolve3({
         redirectUri,
         waitForCallback: () => waitForCallbackOnServer(server, redirectUri, expectedState, timeoutMs),
         close: () => new Promise((closeResolve, closeReject) => {
@@ -4203,7 +4203,7 @@ async function beginLoopback(options) {
   });
 }
 function waitForCallbackOnServer(server, redirectUri, expectedState, timeoutMs) {
-  return new Promise((resolve2, reject) => {
+  return new Promise((resolve3, reject) => {
     let settled = false;
     const timeout = setTimeout(() => {
       if (settled) return;
@@ -4222,7 +4222,7 @@ function waitForCallbackOnServer(server, redirectUri, expectedState, timeoutMs) 
       if (settled) return;
       settled = true;
       clearTimeout(timeout);
-      server.close(() => resolve2(result));
+      server.close(() => resolve3(result));
     };
     server.on("request", (req, res) => {
       if (settled) {
@@ -4284,12 +4284,12 @@ async function defaultOpenBrowser(url) {
     command = "xdg-open";
     args = [url];
   }
-  await new Promise((resolve2, reject) => {
+  await new Promise((resolve3, reject) => {
     const child = spawn(command, args, { stdio: "ignore", detached: true });
     child.on("error", reject);
     child.on("close", (code) => {
       if (code === 0) {
-        resolve2();
+        resolve3();
         return;
       }
       reject(new Error(`Failed to open browser (exit ${code ?? "unknown"})`));
@@ -4478,11 +4478,223 @@ async function runPassword(deckId, value, options, deps = {}) {
 }
 
 // src/commands/publish.ts
-import { access as access2, readFile as readFile5 } from "node:fs/promises";
-import { basename, extname } from "node:path";
+import { access as access2, readFile as readFile6 } from "node:fs/promises";
+import { basename, extname as extname2 } from "node:path";
+
+// src/publish-preflight.ts
+import { readFile as readFile5, realpath, stat } from "node:fs/promises";
+import { dirname as dirname5, extname, isAbsolute, relative, resolve as resolve2 } from "node:path";
+var MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+var HTML_MAGIC = /(?:<html|<!doctype html)/i;
+var SCRIPT_TAG = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+var SCRIPT_WITH_SRC = /<script\b[^>]*(?:\s|\/)src\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))[^>]*>/i;
+var QUOTED_SRC_ATTRIBUTE = /(?:\s|\/)src\s*=\s*(?:"([^"]*)"|'([^']*)')/i;
+var BASE_WITH_HREF = /<base\b[^>]*(?:\s|\/)href\s*=/i;
+var BLOCKED_DOMAINS = ["phishing.example", "malware.example"];
+var PublishPreflightError = class extends Error {
+  constructor(code, message, hint) {
+    super(message);
+    this.code = code;
+    this.hint = hint;
+    this.name = "PublishPreflightError";
+  }
+};
+function isRemoteScriptReference(reference) {
+  return reference.startsWith("//") || /^[a-z][a-z0-9+.-]*:/i.test(reference);
+}
+function localScriptPath(reference) {
+  const pathOnly = reference.split(/[?#]/, 1)[0] ?? "";
+  if (pathOnly.length === 0 || pathOnly.startsWith("/") || pathOnly.includes("&")) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Unsupported local script reference: ${reference}`,
+      "Use a relative .js path, inline the script, or publish a multi-file .zip after login."
+    );
+  }
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathOnly);
+  } catch {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Invalid encoded script path: ${reference}`,
+      "Fix the script src path before publishing."
+    );
+  }
+  if (decoded.includes("\0") || extname(decoded).toLowerCase() !== ".js") {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Only relative .js files can be safely inlined during preflight: ${reference}`,
+      "Inline this dependency yourself, or publish the deck as a multi-file .zip after login."
+    );
+  }
+  return decoded;
+}
+function assertInlineCompatible(attributes, reference) {
+  const hasModuleType = /\btype\s*=\s*(?:["']\s*module\s*["']|module(?:\s|$))/i.test(attributes);
+  const changesExecutionOrder = /\b(?:async|defer|integrity|crossorigin)\b/i.test(attributes);
+  if (hasModuleType || changesExecutionOrder) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Script cannot be auto-inlined without changing its behavior: ${reference}`,
+      "Bundle the dependency into the HTML yourself, or publish a multi-file .zip after login."
+    );
+  }
+}
+async function readLocalScript(deckPath, reference, remainingInlineBytes) {
+  const deckDirectory = dirname5(deckPath);
+  const decodedPath = localScriptPath(reference);
+  const candidatePath = resolve2(deckDirectory, decodedPath);
+  let deckDirectoryReal;
+  let candidateReal;
+  try {
+    [deckDirectoryReal, candidateReal] = await Promise.all([
+      realpath(deckDirectory),
+      realpath(candidatePath)
+    ]);
+  } catch {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Local script was not found: ${reference}`,
+      "Restore the referenced file, inline it into the HTML, or remove the script tag."
+    );
+  }
+  const relativeRealPath = relative(deckDirectoryReal, candidateReal);
+  if (relativeRealPath.length === 0 || relativeRealPath === ".." || relativeRealPath.startsWith(`..${process.platform === "win32" ? "\\" : "/"}`) || isAbsolute(relativeRealPath)) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Local script resolves outside the deck directory: ${reference}`,
+      "Keep publishable assets inside the deck directory, or inline the dependency yourself."
+    );
+  }
+  const info = await stat(candidateReal);
+  if (!info.isFile()) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Local script is not a regular file: ${reference}`,
+      "Reference a regular .js file inside the deck directory."
+    );
+  }
+  if (info.size > remainingInlineBytes) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Preflight output would be too large after inlining: ${reference}`,
+      "Publish a multi-file .zip after login instead of inlining this asset."
+    );
+  }
+  const script = await readFile5(candidateReal, "utf8");
+  if (script.includes("\0") || /<\/script/i.test(script)) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      `Local script cannot be safely embedded as HTML: ${reference}`,
+      "Bundle the dependency into the HTML yourself, or publish a multi-file .zip after login."
+    );
+  }
+  return { script, size: info.size };
+}
+async function preflightHtmlUpload(filePath, originalBuffer) {
+  if (originalBuffer.length === 0) {
+    throw new PublishPreflightError("INVALID_HTML", "Preflight failed: empty file");
+  }
+  if (originalBuffer.length > MAX_UPLOAD_BYTES) {
+    throw new PublishPreflightError("INVALID_HTML", "Preflight failed: file too large");
+  }
+  const original = originalBuffer.toString("utf8");
+  if (!HTML_MAGIC.test(original)) {
+    throw new PublishPreflightError("INVALID_HTML", "Preflight failed: missing html marker");
+  }
+  const lower = original.toLowerCase();
+  for (const domain of BLOCKED_DOMAINS) {
+    if (lower.includes(domain)) {
+      throw new PublishPreflightError(
+        "MALICIOUS_CONTENT",
+        `Preflight blocked domain: ${domain}`,
+        "Remove the blocked reference before publishing."
+      );
+    }
+  }
+  let transformed = "";
+  let cursor = 0;
+  let remainingInlineBytes = MAX_UPLOAD_BYTES - originalBuffer.length;
+  const inlined = [];
+  for (const match of original.matchAll(SCRIPT_TAG)) {
+    const fullTag = match[0];
+    const attributes = match[1] ?? "";
+    const body = match[2] ?? "";
+    const index = match.index ?? 0;
+    const srcMatch = QUOTED_SRC_ATTRIBUTE.exec(attributes);
+    if (!srcMatch) continue;
+    const reference = (srcMatch[1] ?? srcMatch[2] ?? "").trim();
+    if (isRemoteScriptReference(reference)) {
+      throw new PublishPreflightError(
+        "MALICIOUS_CONTENT",
+        `Preflight blocked remote script: ${reference}`,
+        "Bundle the runtime locally and publish a multi-file .zip, or inline reviewed code."
+      );
+    }
+    if (BASE_WITH_HREF.test(original)) {
+      throw new PublishPreflightError(
+        "INVALID_HTML",
+        `Local script cannot be auto-inlined when the document declares <base href>: ${reference}`,
+        "Remove the base element, inline the dependency yourself, or publish a multi-file .zip after login."
+      );
+    }
+    if (body.trim().length > 0) {
+      throw new PublishPreflightError(
+        "INVALID_HTML",
+        `Script tag has both src and inline content: ${reference}`,
+        "Choose one script source before publishing."
+      );
+    }
+    assertInlineCompatible(attributes, reference);
+    const localScript = await readLocalScript(filePath, reference, remainingInlineBytes);
+    remainingInlineBytes -= localScript.size;
+    const inlineAttributes = attributes.replace(QUOTED_SRC_ATTRIBUTE, "").trimEnd();
+    transformed += original.slice(cursor, index);
+    transformed += `<script${inlineAttributes}>${localScript.script}
+</script>`;
+    cursor = index + fullTag.length;
+    inlined.push(reference);
+  }
+  if (inlined.length > 0) {
+    transformed += original.slice(cursor);
+  } else {
+    transformed = original;
+  }
+  const unsupported = SCRIPT_WITH_SRC.exec(transformed);
+  if (unsupported) {
+    const reference = (unsupported[1] ?? unsupported[2] ?? unsupported[3] ?? "").trim();
+    const remote = isRemoteScriptReference(reference);
+    throw new PublishPreflightError(
+      remote ? "MALICIOUS_CONTENT" : "INVALID_HTML",
+      remote ? `Preflight blocked remote script: ${reference}` : `Script reference could not be safely preprocessed: ${reference || "(empty src)"}`,
+      remote ? "Bundle the runtime locally and publish a multi-file .zip, or inline reviewed code." : "Use a quoted relative .js path, inline the script, or publish a multi-file .zip after login."
+    );
+  }
+  const fileBuffer = Buffer.from(transformed, "utf8");
+  if (fileBuffer.length > MAX_UPLOAD_BYTES) {
+    throw new PublishPreflightError(
+      "INVALID_HTML",
+      "Preflight output is too large after inlining local scripts",
+      "Publish a multi-file .zip after login instead of inlining these assets."
+    );
+  }
+  return {
+    fileBuffer,
+    warnings: inlined.length === 0 ? [] : [
+      {
+        code: "LOCAL_SCRIPTS_INLINED",
+        message: `Preflight inlined ${inlined.length} local script${inlined.length === 1 ? "" : "s"} into the upload; source files were not modified.`,
+        recommended_action: "Use a multi-file .zip when script loading semantics must be preserved."
+      }
+    ]
+  };
+}
+
+// src/commands/publish.ts
 var HTML_EXTENSIONS = /* @__PURE__ */ new Set([".html", ".htm"]);
 async function assertPublishFile(filePath, owned, json) {
-  const ext = extname(filePath).toLowerCase();
+  const ext = extname2(filePath).toLowerCase();
   const isHtml = HTML_EXTENSIONS.has(ext);
   const isZip = ext === ".zip";
   if (!isHtml && !isZip) {
@@ -4519,9 +4731,29 @@ async function assertPublishFile(filePath, owned, json) {
 async function runPublish(filePath, options, deps = {}) {
   const config = await loadConfig();
   await assertPublishFile(filePath, Boolean(config.api_key), options.json);
-  const fileBuffer = await readFile5(filePath);
+  let fileBuffer = await readFile6(filePath);
   const filename = basename(filePath);
   const api = deps.api ?? createApiClient();
+  let preflightWarnings = [];
+  if (HTML_EXTENSIONS.has(extname2(filePath).toLowerCase())) {
+    try {
+      const preflight = await preflightHtmlUpload(filePath, fileBuffer);
+      fileBuffer = preflight.fileBuffer;
+      preflightWarnings = preflight.warnings;
+    } catch (err) {
+      if (err instanceof PublishPreflightError) {
+        exitError(
+          {
+            code: err.code,
+            message: err.message,
+            hint: err.hint
+          },
+          { json: options.json }
+        );
+      }
+      throw err;
+    }
+  }
   try {
     if (options.deckId) {
       const anonymousDeck = findAnonDeck(config, options.deckId);
@@ -4543,7 +4775,7 @@ async function runPublish(filePath, options, deps = {}) {
             fileBuffer,
             filename
           );
-          exitOk(result2, { json: options.json });
+          exitOk(result2, { json: options.json, warnings: preflightWarnings });
         } catch (err) {
           if (err instanceof ApiError) {
             const claimedElsewhere = err.code === "DECK_NOT_OWNED" && Boolean(config.api_key);
@@ -4573,7 +4805,7 @@ async function runPublish(filePath, options, deps = {}) {
         options.title
       );
       await removeAnonDeck(options.deckId);
-      exitOk(result, { json: options.json });
+      exitOk(result, { json: options.json, warnings: preflightWarnings });
     } else if (config.api_key) {
       const result = await api.publishOwned(
         {
@@ -4585,7 +4817,7 @@ async function runPublish(filePath, options, deps = {}) {
         config.api_key
       );
       const { warnings, ...data } = result;
-      exitOk(data, { json: options.json, warnings });
+      exitOk(data, { json: options.json, warnings: [...preflightWarnings, ...warnings ?? []] });
     } else {
       const result = await api.publishAnonymous({
         filePath,
@@ -4601,7 +4833,7 @@ async function runPublish(filePath, options, deps = {}) {
         created_at: (/* @__PURE__ */ new Date()).toISOString()
       });
       const { warnings, claim_token: _claimToken, ...data } = result;
-      exitOk(data, { json: options.json, warnings });
+      exitOk(data, { json: options.json, warnings: [...preflightWarnings, ...warnings ?? []] });
     }
   } catch (err) {
     if (err instanceof ApiError) {
@@ -4658,14 +4890,14 @@ async function runRestore(deckId, options, deps = {}) {
 }
 
 // src/skill/installed.ts
-import { access as access3, readFile as readFile6 } from "node:fs/promises";
+import { access as access3, readFile as readFile7 } from "node:fs/promises";
 async function getSkillInstallStatus(options) {
   const targets = getSkillInstallTargets(options);
   const installed = [];
   for (const target of targets) {
     try {
       await access3(target.path);
-      const content = await readFile6(target.path, "utf8");
+      const content = await readFile7(target.path, "utf8");
       const { frontmatter } = parseSkillMarkdown(content);
       installed.push({
         runtime: target.runtime,
@@ -4716,8 +4948,8 @@ async function runStatus(options) {
 }
 
 // src/skill/uninstall.ts
-import { access as access4, rm, rmdir, stat } from "node:fs/promises";
-import { dirname as dirname5 } from "node:path";
+import { access as access4, rm, rmdir, stat as stat2 } from "node:fs/promises";
+import { dirname as dirname6 } from "node:path";
 async function pathExists2(path) {
   try {
     await access4(path);
@@ -4735,7 +4967,7 @@ async function removeFile(path) {
 }
 async function removeEmptyDir(path) {
   try {
-    const info = await stat(path);
+    const info = await stat2(path);
     if (!info.isDirectory()) {
       return;
     }
@@ -4763,9 +4995,9 @@ async function uninstallSkill(options = {}) {
       if (await removeFile(target.path)) {
         removed.push(target.path);
       }
-      await removeEmptyDir(dirname5(target.runnerPath));
-      await removeEmptyDir(dirname5(dirname5(target.runnerPath)));
-      await removeEmptyDir(dirname5(target.path));
+      await removeEmptyDir(dirname6(target.runnerPath));
+      await removeEmptyDir(dirname6(dirname6(target.runnerPath)));
+      await removeEmptyDir(dirname6(target.path));
     }
   }
   return { removed };
@@ -4899,10 +5131,10 @@ async function runVisibility(deckId, visibility, options, deps = {}) {
 // src/index.ts
 function readVersion() {
   if (true) {
-    return "0.1.3";
+    return "0.1.4";
   }
   try {
-    const pkgPath = join6(dirname6(fileURLToPath3(import.meta.url)), "../package.json");
+    const pkgPath = join6(dirname7(fileURLToPath3(import.meta.url)), "../package.json");
     return JSON.parse(readFileSync(pkgPath, "utf8")).version ?? "0.0.0";
   } catch {
     return "0.0.0";
