@@ -2,10 +2,8 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 
 const expectedAdvisories = new Set([
-  'https://github.com/advisories/GHSA-4w7w-66w2-5vf9',
-  'https://github.com/advisories/GHSA-67mh-4wv8-2f99',
-  'https://github.com/advisories/GHSA-fx2h-pf6j-xcff',
-  'https://github.com/advisories/GHSA-v6wh-96g9-6wx3',
+  'https://github.com/advisories/GHSA-5p2g-fcmc-qvqq',
+  'https://github.com/advisories/GHSA-w3rx-r6r6-pgpr',
 ]);
 
 const result = spawnSync('npm', ['audit', '--json'], { encoding: 'utf8' });
@@ -22,8 +20,12 @@ for (const vulnerability of Object.values(report.vulnerabilities ?? {})) {
 assert.deepEqual(
   [...actualAdvisories].sort(),
   [...expectedAdvisories].sort(),
-  'open-slide dependency advisories changed; review the new graph before updating this allowlist',
+  'Slidev dependency advisories changed; review the new graph before updating this allowlist',
 );
-assert.equal(report.metadata?.vulnerabilities?.critical, 0, 'critical advisory detected');
+assert.deepEqual(
+  report.metadata?.vulnerabilities,
+  { info: 0, low: 0, moderate: 0, high: 4, critical: 0, total: 4 },
+  'Slidev vulnerability counts changed; review the new graph before updating this allowlist',
+);
 
-console.log('Known open-slide dependency advisory set is unchanged (4 advisories).');
+console.log('Known Slidev dependency advisory set is unchanged (2 advisories).');

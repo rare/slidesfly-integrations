@@ -52,8 +52,8 @@ runs:
         INPUT_VISIBILITY: ${{ inputs.visibility }}
         SLIDESFLY_API_URL: https://slidesfly.com
         SLIDESFLY_CLI_URL: https://slidesfly.com/cli.mjs
-        SLIDESFLY_CLI_VERSION: 0.1.4
-        SLIDESFLY_CLI_SHA256: 39e047dd8962893bf644c9e204ed34625863790942f31912cca372d26b996406
+        SLIDESFLY_CLI_VERSION: 0.1.5
+        SLIDESFLY_CLI_SHA256: fd4d1ce67f58960c20cbc12dcafdb888e0286a77f91264c2a0911becc9ff5b37
       run: '"$GITHUB_ACTION_PATH/publish.sh"'
 
 branding:

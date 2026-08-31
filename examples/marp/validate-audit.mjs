@@ -2,10 +2,7 @@ import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 
 const expectedAdvisories = new Set([
-  'https://github.com/advisories/GHSA-4w7w-66w2-5vf9',
-  'https://github.com/advisories/GHSA-67mh-4wv8-2f99',
-  'https://github.com/advisories/GHSA-fx2h-pf6j-xcff',
-  'https://github.com/advisories/GHSA-v6wh-96g9-6wx3',
+  'https://github.com/advisories/GHSA-jmr9-qjv8-65gv',
 ]);
 
 const result = spawnSync('npm', ['audit', '--json'], { encoding: 'utf8' });
@@ -22,8 +19,12 @@ for (const vulnerability of Object.values(report.vulnerabilities ?? {})) {
 assert.deepEqual(
   [...actualAdvisories].sort(),
   [...expectedAdvisories].sort(),
-  'open-slide dependency advisories changed; review the new graph before updating this allowlist',
+  'Marp dependency advisories changed; review the new graph before updating this allowlist',
 );
-assert.equal(report.metadata?.vulnerabilities?.critical, 0, 'critical advisory detected');
+assert.deepEqual(
+  report.metadata?.vulnerabilities,
+  { info: 0, low: 0, moderate: 0, high: 4, critical: 0, total: 4 },
+  'Marp vulnerability counts changed; review the new graph before updating this allowlist',
+);
 
-console.log('Known open-slide dependency advisory set is unchanged (4 advisories).');
+console.log('Known Marp dependency advisory set is unchanged (1 advisory).');

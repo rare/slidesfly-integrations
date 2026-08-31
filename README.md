@@ -57,7 +57,7 @@ npx skills add rare/slidesfly-integrations --skill slidesfly
 Install exact public npm versions with:
 
 ```bash
-npm install --global @slidesfly/cli@0.1.4
+npm install --global @slidesfly/cli@0.1.5
 slidesfly --version
 npx -y @slidesfly/mcp@0.1.0
 ```
@@ -70,7 +70,7 @@ them.
 Install the Gemini CLI extension from the public repository:
 
 ```bash
-gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.2
+gemini extensions install https://github.com/rare/slidesfly-integrations --ref v0.3.3
 ```
 
 Gemini CLI requests `SLIDESFLY_API_KEY` as a sensitive setting and stores it in the system
@@ -90,7 +90,7 @@ Publish a deck from GitHub Actions with:
 
 ```yaml
 - id: deck
-  uses: rare/slidesfly-integrations@v0.3.2
+  uses: rare/slidesfly-integrations@v0.3.3
   with:
     file: deck.html
     api-key: ${{ secrets.SLIDESFLY_API_KEY }}
@@ -103,7 +103,7 @@ using it.
 
 ## Current boundaries
 
-- The website installer and `@slidesfly/cli@0.1.4` are supported public CLI distributions.
+- The website installer and `@slidesfly/cli@0.1.5` are supported public CLI distributions.
 - The hosted MCP endpoint is `https://slidesfly.com/api/mcp` and requires a Slidesfly API key.
 - The stdio MCP package is `@slidesfly/mcp@0.1.0`; its local config remains separate from hosted
   MCP bearer authentication.

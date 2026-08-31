@@ -22,7 +22,7 @@ const manifest = JSON.parse(manifestText);
 const mcp = JSON.parse(mcpText);
 
 assert.equal(manifest.name, 'slidesfly');
-assert.equal(manifest.version, '0.2.1');
+assert.equal(manifest.version, '0.2.2');
 assert.equal(manifest.repository, 'https://github.com/rare/slidesfly-integrations');
 assert.equal(manifest.userConfig.api_key.type, 'string');
 assert.equal(manifest.userConfig.api_key.required, true);

@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deck
-        uses: rare/slidesfly-integrations@v0.3.2
+        uses: rare/slidesfly-integrations@v0.3.3
         with:
           file: examples/plain-html/deck.html
           api-key: ${{ secrets.SLIDESFLY_API_KEY }}
