@@ -32,7 +32,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deck
-        uses: rare/slidesfly-integrations@v0.2.0
+        uses: rare/slidesfly-integrations@v0.3.3
         with:
           file: examples/plain-html/deck.html
           api-key: ${{ secrets.SLIDESFLY_API_KEY }}
@@ -54,6 +54,6 @@ construction, output mapping, and cleanup. A
 [production smoke run](https://github.com/rare/slidesfly-integrations/actions/runs/30381572513)
 updated the public test deck and verified its stable reader URL on 2026-07-29.
 
-The current version check detects a mismatched hosted CLI version but does not prove byte-level
-artifact integrity. PR comments are outside this action's scope; it writes a job summary and exposes
-outputs for a separately permissioned comment step.
+The action verifies both the hosted CLI version and its pinned SHA-256 before execution. PR comments
+are outside this action's scope; it writes a job summary and exposes outputs for a separately
+permissioned comment step.

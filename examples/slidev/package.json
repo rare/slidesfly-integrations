@@ -6,14 +6,17 @@
     "node": ">=22.18.0 <23"
   },
   "scripts": {
+    "audit:known": "node validate-audit.mjs",
     "build": "slidev build slides.md --base ./ --out dist && node ../inject-slidesfly-reader-bridge.mjs dist/index.html slidev"
   },
   "dependencies": {
-    "@slidev/cli": "52.18.1",
+    "@slidev/cli": "52.19.1",
     "@slidev/theme-default": "0.25.0"
   },
   "overrides": {
-    "dompurify": "3.4.12",
-    "hono": "4.12.34"
+    "dompurify": "3.4.14",
+    "hono": "4.12.34",
+    "js-yaml": "4.3.2",
+    "nanoid": "3.3.18"
   }
 }

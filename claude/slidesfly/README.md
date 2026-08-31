@@ -40,9 +40,10 @@ Use a read-only smoke prompt before publishing:
 
 ## Distribution status
 
-This is a public, locally validated package source. It has not yet been submitted to or accepted by
-the Claude Code Plugins Directory. Do not describe
-`slidesfly@claude-plugins-official` as installable until an exact directory receipt is verified.
+This public package source was submitted on 2026-08-30 through Leibe's Individual Org. Review is
+pending, and it has not been accepted or published by the Claude Code Plugins Directory. Do not
+describe `slidesfly@claude-plugins-official` as installable until an exact directory receipt is
+verified.
 
 ## Security
 

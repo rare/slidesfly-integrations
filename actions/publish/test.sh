@@ -15,7 +15,7 @@ printf '<!doctype html><title>Action fixture</title>\n' >"$mock_deck"
 cat >"$mock_cli" <<'EOF'
 #!/usr/bin/env node
 if (process.argv.includes('--version')) {
-  process.stdout.write('0.1.3\n');
+  process.stdout.write('0.1.5\n');
   process.exit(0);
 }
 if (!process.argv.includes('publish')) process.exit(2);
@@ -45,7 +45,7 @@ if INPUT_FILE="$mock_deck" \
   INPUT_VISIBILITY="unlisted" \
   SLIDESFLY_API_URL="https://slidesfly.example" \
   SLIDESFLY_CLI_URL="file://$mock_cli" \
-  SLIDESFLY_CLI_VERSION="0.1.3" \
+  SLIDESFLY_CLI_VERSION="0.1.5" \
   SLIDESFLY_CLI_SHA256="0000000000000000000000000000000000000000000000000000000000000000" \
   RUNNER_TEMP="$test_temp" \
   GITHUB_OUTPUT="$github_output" \
@@ -62,7 +62,7 @@ INPUT_DECK_ID="" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.3" \
+SLIDESFLY_CLI_VERSION="0.1.5" \
 SLIDESFLY_CLI_SHA256="$mock_cli_sha256" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_output" \
@@ -80,7 +80,7 @@ INPUT_DECK_ID="test-deck-id" \
 INPUT_VISIBILITY="unlisted" \
 SLIDESFLY_API_URL="https://slidesfly.example" \
 SLIDESFLY_CLI_URL="file://$mock_cli" \
-SLIDESFLY_CLI_VERSION="0.1.3" \
+SLIDESFLY_CLI_VERSION="0.1.5" \
 SLIDESFLY_CLI_SHA256="$mock_cli_sha256" \
 RUNNER_TEMP="$test_temp" \
 GITHUB_OUTPUT="$github_update_output" \

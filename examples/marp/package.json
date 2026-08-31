@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "audit:known": "node validate-audit.mjs",
     "build": "marp slides.md --output build/index.html"
   },
   "devDependencies": {
     "@marp-team/marp-cli": "4.5.0"
+  },
+  "overrides": {
+    "js-yaml": "4.3.2",
+    "nanoid": "3.3.18"
   }
 }
