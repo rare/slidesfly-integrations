@@ -7,7 +7,7 @@
     "build": "marp slides.md --output build/index.html"
   },
   "devDependencies": {
-    "@marp-team/marp-cli": "4.5.0"
+    "@marp-team/marp-cli": "4.5.1"
   },
   "overrides": {
     "js-yaml": "4.3.2",
